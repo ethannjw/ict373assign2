@@ -51,8 +51,16 @@ public class Person {
         return gender;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setGender(String gender) throws Exception {
+        if (gender.equalsIgnoreCase("female")) {
+            this.gender = "Female";
+            return;
+        }
+        if (gender.equalsIgnoreCase("male")) {
+            this.gender = "Male";
+            return;
+        }
+        throw new Exception("Invalid Gender: Usage is 'Male' or 'Female'");
     }
 
     public Address getAddress() {
@@ -79,12 +87,26 @@ public class Person {
         this.children = children;
     }
 
+    public void setChildren(Person children) {
+        this.children.add(children);
+    }
+
     public ArrayList<Person> getParents() {
         return (ArrayList<Person>) parents;
     }
 
-    public void setParents(ArrayList<Person> parents) {
+    public void setParents(ArrayList<Person> parents) throws Exception {
+        if (parents.size() > 2) {
+            throw new Exception("Already has 2 parents");
+        }
         this.parents = parents;
+    }
+
+    public void setParents(Person parents) throws Exception {
+        if (this.parents.size() >= 2) {
+            throw new Exception("Already has 2 parents");
+        }
+        this.parents.add(parents);
     }
 
     public Person getSpouse() {
