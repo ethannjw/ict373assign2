@@ -23,7 +23,7 @@ public class Main extends Application {
 
 
     // The left pane containing the treeview
-    private TreeView<Person> treeView = new TreeView<Person>();
+    private TreeView<Person> treeView = new TreeView<>();
     private Person rootPerson = null;
 
     // the top pane
@@ -52,6 +52,7 @@ public class Main extends Application {
     private HBox rightPaneButtons = new HBox(8);
     Button editDetails;
     Button addRelative;
+    Button setRoot;
 
     /**
      * Start method for the GUI
@@ -61,10 +62,14 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         rootPerson = CreatePerson.createKirito();
+
         // buttons settings
         loadBtn.setText("Load");
         saveBtn.setText("Save");
         createBtn.setText("Create");
+
+        // Create the treeView
+        createTree(rootPerson);
 
         // bottom status bar settings
         statusBar.getChildren().add(statusText);
@@ -123,15 +128,17 @@ public class Main extends Application {
         addRelative.setOnAction(evt -> {
 
         });
-        rightPaneButtons.getChildren().addAll(editDetails, addRelative);
+        setRoot = new Button("Set as Root");
+        setRoot.setOnAction(evt -> {
+            createTree(rootPerson);
+        });
+
+        rightPaneButtons.getChildren().addAll(setRoot, editDetails, addRelative);
         rightPaneButtons.setAlignment(Pos.BOTTOM_RIGHT);
         rightPane.setPadding(new Insets(0,10,0,10));
         rightPane.setLeft(contentLabels);
         //rightPane.setCenter(contentDesc);
         rightPane.setBottom(rightPaneButtons);
-
-        // Create the treeView
-        treeView = createTree(rootPerson);
 
         // main container border pane settings
         mainContainer.setPrefSize(600,700);
@@ -146,6 +153,11 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    /**
+     * This is the edit Person dialog box that allows the user to edit the person
+     * @param primaryStage  The main stage
+     * @param person        The person object to edit
+     */
     private void editPersonDialog(Stage primaryStage, Person person) {
 
         Stage editPerson = new Stage();
@@ -203,10 +215,12 @@ public class Main extends Application {
         editPersonMainBox.add(postCodeField, 1,8);
 
 
-
-        // use HBox to identify each attribute
+        // use HBox to arrange the buttons
         HBox buttonRow = new HBox(8);
         Button confirmBtn = new Button("Confirm");
+        confirmBtn.setOnAction(evt -> {
+
+        });
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setOnAction(evt -> {
             editPerson.close();
@@ -215,6 +229,7 @@ public class Main extends Application {
         buttonRow.setAlignment(Pos.BOTTOM_RIGHT);
 
 
+        // Setting the stage
         BorderPane mainEditPersonContainer = new BorderPane(editPersonMainBox);
         mainEditPersonContainer.setTop(editPersonTitle);
         mainEditPersonContainer.setBottom(buttonRow);
@@ -224,11 +239,15 @@ public class Main extends Application {
         editPerson.show();
     }
 
+    /**
+     * Generate the tree from the specified person
+     * @param person    Specified person to create the tree details
+     */
     @SuppressWarnings({ "unchecked", "rawtypes" }) // suppress the title nodes using rawtypes since they are only title nodes
-    private TreeView<Person> createTree(Person person) {
-        TreeView<Person> famTree = new TreeView<>();
+    private void createTree(Person person) {
+
         TreeItem<Person> root = new TreeItem<Person>(person);
-        famTree.setRoot(root);
+        treeView.setRoot(root);
 
         // setting the title nodes
         TreeItem<Person> parents = new TreeItem("Parents");
@@ -248,8 +267,8 @@ public class Main extends Application {
         root.setExpanded(true);
 
         // setting the buttons
-        famTree.setOnMouseClicked(evt -> showSelected(evt));
-        return famTree;
+        treeView.setOnMouseClicked(evt -> showSelected(evt));
+
     }
 
     /**
@@ -282,6 +301,7 @@ public class Main extends Application {
 
             System.out.println("Showing: " + selectedItem.getValue());
             changeView(selectedItem.getValue());
+            rootPerson = selectedItem.getValue();
         } catch (NullPointerException | ClassCastException e) {
             System.out.println("");
         }
