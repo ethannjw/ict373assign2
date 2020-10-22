@@ -29,6 +29,7 @@ public class Main extends Application {
     // The left pane containing the treeview
     private TreeView<Person> treeView = new TreeView<>();
     private Person rootPerson = null;
+    private Person selectedPerson = null;
 
     // the top pane
     private VBox topPane = new VBox(8);
@@ -65,52 +66,16 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        rootPerson = CreatePerson.nullPerson();
+        rootPerson = CreatePerson.createKirito();
 
         // buttons settings
         loadBtn.setText("Load");
         loadBtn.setOnAction(evt -> {
-            File userSelectedFile;
-            FileChooser fileChooser = new FileChooser();
-            File initDir = new File(".");
-            fileChooser.setInitialDirectory(initDir);
-            try {
-                userSelectedFile = fileChooser.showOpenDialog(primaryStage);
-            } catch (NullPointerException e) {
-                statusText.setText("User quit the file choose dialog");
-                return;
-            }
-
-            try {
-                rootPerson = FileHandler.load(userSelectedFile);
-                createTree(rootPerson);
-            } catch (IOException e) {
-                System.out.println(e);
-                statusText.setText("Something Went Wrong when trying to open the file!");
-            } catch (NullPointerException e) {
-                System.out.println(e);
-                statusText.setText("File not selected!");
-            }
+            openFileChooser(evt, primaryStage);
         });
         saveBtn.setText("Save");
         saveBtn.setOnAction(evt -> {
-            FileChooser fileChooser = new FileChooser();
-            File initDir = new File(".");
-            fileChooser.setInitialDirectory(initDir);
-
-            if (rootPerson == null) {
-                statusText.setText("Nothing to save!");
-                return;
-            }
-            File userSelectedFile = fileChooser.showSaveDialog(primaryStage);
-            try {
-                FileHandler.save(userSelectedFile, rootPerson);
-                statusText.setText("File saved!");
-            } catch (IOException e) {
-                System.out.println(e);
-                statusText.setText("Something Went Wrong when trying to save the file!");
-            }
-
+            saveFileChooser(evt, primaryStage);
         });
         createBtn.setText("Create");
 
@@ -168,7 +133,7 @@ public class Main extends Application {
         // buttons for adding relative and editing details
         editDetails = new Button("Edit Person");
         editDetails.setOnAction(evt -> {
-            editPersonDialog(primaryStage, rootPerson);
+            editPersonDialog(primaryStage, selectedPerson);
         });
         addRelative = new Button("Add Relative");
         addRelative.setOnAction(evt -> {
@@ -199,6 +164,48 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    private void openFileChooser(Event evt, Stage primaryStage) {
+        File userSelectedFile;
+        FileChooser fileChooser = new FileChooser();
+        File initDir = new File(".");
+        fileChooser.setInitialDirectory(initDir);
+        try {
+            userSelectedFile = fileChooser.showOpenDialog(primaryStage);
+        } catch (NullPointerException e) {
+            statusText.setText("User quit the file choose dialog");
+            return;
+        }
+
+        try {
+            rootPerson = FileHandler.load(userSelectedFile);
+            createTree(rootPerson);
+        } catch (IOException e) {
+            System.out.println(e);
+            statusText.setText("Something Went Wrong when trying to open the file!");
+        } catch (NullPointerException e) {
+            System.out.println(e);
+            statusText.setText("File not selected!");
+        }
+
+    }
+    private void saveFileChooser(Event evt, Stage primaryStage) {
+        FileChooser fileChooser = new FileChooser();
+        File initDir = new File(".");
+        fileChooser.setInitialDirectory(initDir);
+
+        if (rootPerson == null) {
+            statusText.setText("Nothing to save!");
+            return;
+        }
+        File userSelectedFile = fileChooser.showSaveDialog(primaryStage);
+        try {
+            FileHandler.save(userSelectedFile, rootPerson);
+            statusText.setText("File saved!");
+        } catch (IOException e) {
+            System.out.println(e);
+            statusText.setText("Something Went Wrong when trying to save the file!");
+        }
+    }
     /**
      * This is the edit Person dialog box that allows the user to edit the person
      * @param primaryStage  The main stage
@@ -261,10 +268,36 @@ public class Main extends Application {
         editPersonMainBox.add(postCodeField, 1,8);
 
 
+        // alert popup
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error");
+        alert.setHeaderText("");
+        alert.setContentText("");
+
         // use HBox to arrange the buttons
         HBox buttonRow = new HBox(8);
         Button confirmBtn = new Button("Confirm");
         confirmBtn.setOnAction(evt -> {
+            try {
+                saveEditedPerson(
+                        firstNameField.getText(),
+                        surnameBefField.getText(),
+                        surnameAftField.getText(),
+                        genderField.getText(),
+                        descriptionField.getText(),
+                        streetNumField.getText(),
+                        streetNameField.getText(),
+                        suburbField.getText(),
+                        postCodeField.getText()
+                );
+                editPerson.close();
+            } catch (Exception e) {
+                System.out.println(e);
+                alert.setHeaderText("Error in saving person");
+                alert.setContentText(e.getMessage());
+                alert.showAndWait();
+
+            }
 
         });
         Button cancelBtn = new Button("Cancel");
@@ -285,6 +318,18 @@ public class Main extends Application {
         editPerson.show();
     }
 
+    private void saveEditedPerson(String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName,String subrub, String postCode) throws Exception {
+        selectedPerson.setFirstName(firstName);
+        selectedPerson.setLastnameAtBirth(lastNameAtBirth);
+        selectedPerson.setLastnameUponMarriage(lastNameUponMarriage);
+        selectedPerson.setGender(gender);
+        selectedPerson.setDescription(desc);
+        selectedPerson.getAddress().setStreetNum(streetNum);
+        selectedPerson.getAddress().setStreetName(streetName);
+        selectedPerson.getAddress().setSuburb(subrub);
+        selectedPerson.getAddress().setPostCode(Integer.parseInt(postCode));
+
+    }
     /**
      * Generate the tree from the specified person
      * @param person    Specified person to create the tree details
@@ -347,7 +392,7 @@ public class Main extends Application {
 
             System.out.println("Showing: " + selectedItem.getValue());
             changeView(selectedItem.getValue());
-            rootPerson = selectedItem.getValue();
+            selectedPerson = selectedItem.getValue();
         } catch (NullPointerException | ClassCastException e) {
             System.out.println("");
         }

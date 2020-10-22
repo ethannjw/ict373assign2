@@ -2,12 +2,12 @@ import java.io.Serializable;
 import java.util.Objects;
 
 public class Address implements Serializable {
-    private int streetNum;
+    private String streetNum;
     private String streetName;
     private String suburb;
     private int postCode;
 
-    public Address(int streetNum, String streetName, String suburb, int postCode) {
+    public Address(String streetNum, String streetName, String suburb, int postCode) {
         super();
         this.streetNum = streetNum;
         this.streetName = streetName;
@@ -15,11 +15,11 @@ public class Address implements Serializable {
         this.postCode = postCode;
     }
 
-    public int getStreetNum() {
+    public String getStreetNum() {
         return streetNum;
     }
 
-    public void setStreetNum(int streetNum) {
+    public void setStreetNum(String streetNum) {
         this.streetNum = streetNum;
     }
 

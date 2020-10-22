@@ -23,7 +23,7 @@ public class CreatePerson {
 
     public static Person createKoisumiSan() {
         try {
-            Address addr = new Address(123, "Honkai Impact 1", "Tokyo", 123453);
+            Address addr = new Address("123", "Honkai Impact 1", "Tokyo", 123453);
             Person koisumiSan = new Person("Koisumi 小泉さん", "Unknown", "", "Female", addr, "\"As a recent transfer student, Koizumi-san has always been shrouded in mystery among her classmates. Nothing much is known about Koizumi-san, and even her first name is never mentioned. Nevertheless, her beauty has made her very popular among boys. \\n\\nIt was her classmate Yuu who discovered Koizumi-san's fascination with ramen. Koizumi-san would go to any length to discover new ramen dishes around Japan, even if it means climbing a mountain or failing a school test. What is perhaps most unusual about Koizumi-san is that she has no fear in visiting ramen shops by herself, which are always populated by male customers. The fear and embarrassment that is usually felt by girls who visit Japanese ramen shops alone simply does not register with Koizumi-san in the slightest - eating ramen is the ultimate source of happiness for her.\"");
             Person child = new Person("Ramen", "Unknown", "", "Female", addr, "Child of Koisumi-San is Ramen");
             Person spouse = new Person("Osawa", "Yuu", "Unknown", "Female", addr, "Yuu is a 16 year-old, first-year high school student. She is in the same class as Koizumi-san, and is best friends with Misa and Jun, who are both first-years as well. Yuu lives in an apartment with her parents and older brother, Shuu. She also has an older cousin, Ayane, who very much resembles Yuu in appearance and personality.\n For as long as her friends can remember, Yuu has always had a penchant for girls who looked cute. When she met Koizumi-san, Yuu was fully determined to try to become friends with her. This would involve wanting to tag along with Koizumi-san on her ramen trips, even when uninvited. Her persistence rubs off on Koizumi-san as being obsessive, if not stalker-like.\nShe has a knack for making homemade Japanese meals for her friends and family.");
@@ -39,8 +39,8 @@ public class CreatePerson {
 
     public static Person createKirito() {
         try {
-            Address addr = new Address(123, "Sword Art Online", "Tokyo", 123453);
-            Address addr2 = new Address(123, "Sword Art Online 2", "Tokyo", 123453);
+            Address addr = new Address("123", "Sword Art Online", "Tokyo", 123453);
+            Address addr2 = new Address("123", "Sword Art Online 2", "Tokyo", 123453);
             Person kirito = new Person("Kazuto 和人", "Kirigaya 桐ヶ谷", "Kirigaya 桐ヶ谷", "Male", addr, "Kirigaya Kazuto (桐ヶ谷 和人, Kirigaya Kazuto?), born as Narusaka Kazuto (鳴坂 和人なるさか かずと, Narusaka Kazuto?)[1], and known as Kirito (キリト, Kirito?) in «Sword Art Online» (SAO), «ALfheim Online» (ALO), «Gun Gale Online» (GGO), and «Project Alicization», is the protagonist of the main Sword Art Online series.");
             Person midori = new Person("Midori 翠", "Aoi", "Kirigaya 桐ヶ谷", "female", addr, "Kirigaya Midori (桐ヶ谷翠, Kirigaya Midori?) is the mother of Suguha, as well as the aunt and adoptive mother of Kazuto. She is an extremely busy woman and leaves the two kids to take care of themselves, only coming back home late in the night and leaving early in the morning, though she still shows love and care for them.");
             Person minetaka = new Person("Minetaka", "Kirigaya 桐ヶ谷", "Kirigaya 桐ヶ谷", "male", addr, "Unknown");
