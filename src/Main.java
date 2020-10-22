@@ -10,8 +10,12 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+
+import java.io.File;
+import java.io.IOException;
 
 public class Main extends Application {
     // main container
@@ -61,11 +65,53 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
-        rootPerson = CreatePerson.createKirito();
+        rootPerson = CreatePerson.nullPerson();
 
         // buttons settings
         loadBtn.setText("Load");
+        loadBtn.setOnAction(evt -> {
+            File userSelectedFile;
+            FileChooser fileChooser = new FileChooser();
+            File initDir = new File(".");
+            fileChooser.setInitialDirectory(initDir);
+            try {
+                userSelectedFile = fileChooser.showOpenDialog(primaryStage);
+            } catch (NullPointerException e) {
+                statusText.setText("User quit the file choose dialog");
+                return;
+            }
+
+            try {
+                rootPerson = FileHandler.load(userSelectedFile);
+                createTree(rootPerson);
+            } catch (IOException e) {
+                System.out.println(e);
+                statusText.setText("Something Went Wrong when trying to open the file!");
+            } catch (NullPointerException e) {
+                System.out.println(e);
+                statusText.setText("File not selected!");
+            }
+        });
         saveBtn.setText("Save");
+        saveBtn.setOnAction(evt -> {
+            FileChooser fileChooser = new FileChooser();
+            File initDir = new File(".");
+            fileChooser.setInitialDirectory(initDir);
+
+            if (rootPerson == null) {
+                statusText.setText("Nothing to save!");
+                return;
+            }
+            File userSelectedFile = fileChooser.showSaveDialog(primaryStage);
+            try {
+                FileHandler.save(userSelectedFile, rootPerson);
+                statusText.setText("File saved!");
+            } catch (IOException e) {
+                System.out.println(e);
+                statusText.setText("Something Went Wrong when trying to save the file!");
+            }
+
+        });
         createBtn.setText("Create");
 
         // Create the treeView

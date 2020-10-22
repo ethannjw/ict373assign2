@@ -1,8 +1,9 @@
+import java.io.Serializable;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Person {
+public class Person implements Serializable {
     private String firstName;
     private String lastnameAtBirth;
     private String lastnameUponMarriage;
@@ -52,6 +53,10 @@ public class Person {
     }
 
     public void setGender(String gender) throws Exception {
+        if (gender.equalsIgnoreCase("")) {
+            this.gender = "";
+            return;
+        }
         if (gender.equalsIgnoreCase("female")) {
             this.gender = "Female";
             return;

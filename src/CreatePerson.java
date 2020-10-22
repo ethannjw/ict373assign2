@@ -9,6 +9,18 @@ public class CreatePerson {
 
     }
 
+    public static Person nullPerson() {
+        try {
+            Person johnDoe = new Person("", "", "", "", null, "");
+            return johnDoe;
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return null;
+
+
+    }
+
     public static Person createKoisumiSan() {
         try {
             Address addr = new Address(123, "Honkai Impact 1", "Tokyo", 123453);
