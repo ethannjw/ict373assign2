@@ -1,16 +1,17 @@
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
-import sun.reflect.generics.tree.Tree;
 
 public class Main extends Application {
     // main container
@@ -116,7 +117,7 @@ public class Main extends Application {
         // buttons for adding relative and editing details
         editDetails = new Button("Edit Person");
         editDetails.setOnAction(evt -> {
-
+            editPersonDialog(primaryStage, rootPerson);
         });
         addRelative = new Button("Add Relative");
         addRelative.setOnAction(evt -> {
@@ -138,11 +139,89 @@ public class Main extends Application {
         mainContainer.setLeft(treeView);
         mainContainer.setCenter(rightPane);
         mainContainer.setBottom(statusBar);
-
+        mainContainer.setPadding(new Insets(3,3,3,3));
         primaryStage.setTitle("Family Tree Management System");
 
         primaryStage.setScene(new Scene(mainContainer));
         primaryStage.show();
+    }
+
+    private void editPersonDialog(Stage primaryStage, Person person) {
+
+        Stage editPerson = new Stage();
+        editPerson.setTitle("Edit Person");
+        editPerson.initModality(Modality.APPLICATION_MODAL);    // set to block other windows
+        editPerson.initOwner(primaryStage);
+        GridPane editPersonMainBox = new GridPane();
+        editPersonMainBox.setBorder(new Border(new BorderStroke(Color.valueOf("#9E9E9E"), BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
+        editPersonMainBox.setPadding(new Insets(3,3,3,3));
+
+        // create the title
+        Text editPersonTitle = new Text("Edit Person");
+        editPersonTitle.setFont(Font.font("Times New Roman", 30));
+
+        // Create the labels on the left side
+        Text firstNameLabel = new Text("Firstname : ");
+        editPersonMainBox.add(firstNameLabel, 0,0);
+        Text surnameBefLabel = new Text("Lastname bef Marriage :");
+        editPersonMainBox.add(surnameBefLabel, 0,1);
+        Text surnameAftLabel = new Text("Lastname aft Marriage :");
+        editPersonMainBox.add(surnameAftLabel, 0,2);
+        Text genderLabel = new Text("Sex :");
+        editPersonMainBox.add(genderLabel, 0,3);
+        Text descriptionLabel = new Text("Description :");
+        editPersonMainBox.add(descriptionLabel, 0,4);
+        Text streetNumLabel = new Text("Street Num :");
+        editPersonMainBox.add(streetNumLabel, 0,5);
+        Text streetNameLabel = new Text("Street Name :");
+        editPersonMainBox.add(streetNameLabel, 0,6);
+        Text suburbLabel = new Text("Suburb :");
+        editPersonMainBox.add(suburbLabel, 0,7);
+        Text postCodeLabel = new Text("Postcode :");
+        editPersonMainBox.add(postCodeLabel, 0,8);
+
+        // Create the text fields on the right side
+        TextField firstNameField = new TextField(person.getFirstName());
+        editPersonMainBox.add(firstNameField, 1, 0);
+        TextField surnameBefField = new TextField(person.getLastnameAtBirth());
+        editPersonMainBox.add(surnameBefField, 1,1);
+        TextField surnameAftField = new TextField(person.getLastnameUponMarriage());
+        editPersonMainBox.add(surnameAftField, 1,2);
+        TextField genderField = new TextField(person.getGender());
+        editPersonMainBox.add(genderField, 1,3);
+        TextArea descriptionField = new TextArea(person.getDescription());
+        descriptionField.autosize();
+        descriptionField.setWrapText(true);
+        editPersonMainBox.add(descriptionField, 1,4);
+        TextField streetNumField = new TextField("" + person.getAddress().getStreetNum());
+        editPersonMainBox.add(streetNumField, 1,5);
+        TextField streetNameField = new TextField(person.getAddress().getStreetName());
+        editPersonMainBox.add(streetNameField, 1,6);
+        TextField suburbField = new TextField(person.getAddress().getSuburb());
+        editPersonMainBox.add(suburbField, 1,7);
+        TextField postCodeField = new TextField("" + person.getAddress().getPostCode());
+        editPersonMainBox.add(postCodeField, 1,8);
+
+
+
+        // use HBox to identify each attribute
+        HBox buttonRow = new HBox(8);
+        Button confirmBtn = new Button("Confirm");
+        Button cancelBtn = new Button("Cancel");
+        cancelBtn.setOnAction(evt -> {
+            editPerson.close();
+        });
+        buttonRow.getChildren().addAll(cancelBtn, confirmBtn);
+        buttonRow.setAlignment(Pos.BOTTOM_RIGHT);
+
+
+        BorderPane mainEditPersonContainer = new BorderPane(editPersonMainBox);
+        mainEditPersonContainer.setTop(editPersonTitle);
+        mainEditPersonContainer.setBottom(buttonRow);
+        mainEditPersonContainer.setPadding(new Insets(3,3,3,3));
+        Scene dialogScene = new Scene(mainEditPersonContainer, 400, 600);
+        editPerson.setScene(dialogScene);
+        editPerson.show();
     }
 
     @SuppressWarnings({ "unchecked", "rawtypes" }) // suppress the title nodes using rawtypes since they are only title nodes

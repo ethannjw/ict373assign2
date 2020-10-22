@@ -38,6 +38,7 @@ public class CreatePerson {
             Person kuroHime = new Person("Kurohime", "Princess", "", "female", addr2, "Black Princess");
             kirito.setChildren(yui);
             kirito.setChildren(kuroHime);
+            asuna.setChildren(yui);
             kuroHime.setChildren(yui2);
             try {
                 kirito.setParents(midori);
