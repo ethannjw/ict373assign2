@@ -13,14 +13,14 @@ public class Person {
     private List<Person> children = new ArrayList<>();
     private List<Person> parents = new ArrayList<>();
 
-    public Person(String firstName, String lastnameAtBirth, String lastnameUponMarriage, String gender, Address address, String description) {
+    public Person(String firstName, String lastnameAtBirth, String lastnameUponMarriage, String gender, Address address, String description) throws Exception {
         super();
-        this.firstName = firstName;
-        this.lastnameAtBirth = lastnameAtBirth;
-        this.lastnameUponMarriage = lastnameUponMarriage;
-        this.gender = gender;
-        this.address = address;
-        this.description = description;
+        setFirstName(firstName);
+        setLastnameAtBirth(lastnameAtBirth);
+        setLastnameUponMarriage(lastnameUponMarriage);
+        setGender(gender);
+        setAddress(address);
+        setDescription(description);
     }
 
     public String getFirstName() {
@@ -136,12 +136,13 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Person{" +
-                "firstName='" + firstName + '\'' +
-                ", lastnameAtBirth='" + lastnameAtBirth + '\'' +
-                ", gender='" + gender + '\'' +
-                ", address=" + address +
-                ", description='" + description + '\'' +
-                '}';
+//        return "Person{" +
+//                "firstName='" + firstName + '\'' +
+//                ", lastnameAtBirth='" + lastnameAtBirth + '\'' +
+//                ", gender='" + gender + '\'' +
+//                ", address=" + address +
+//                ", description='" + description + '\'' +
+//                '}';
+        return firstName;
     }
 }

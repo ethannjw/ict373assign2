@@ -10,6 +10,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import sun.reflect.generics.tree.Tree;
 
 public class Main extends Application {
     // main container
@@ -34,16 +35,28 @@ public class Main extends Application {
 
     // the right pane
     private BorderPane rightPane = new BorderPane();
-    // right side containing the file contents
-    private VBox contentDesc = new VBox(8);
-    private TextArea content;
-    //left side containing the labels
+    // the right pane attributes
     private VBox contentLabels = new VBox(8);
+    private HBox firstName = new HBox(8);
+    private HBox surnameBef = new HBox(8);
+    private HBox surnameAft = new HBox(8);
+    private HBox gender = new HBox(8);
+    private VBox desc = new VBox(8);
+    private TextArea descContent = new TextArea("");
+    private HBox streetNum = new HBox(8);
+    private HBox streetName = new HBox(8);
+    private HBox suburb = new HBox(8);
+    private HBox postCode = new HBox(8);
     // buttons to be set to the bottom
     private HBox rightPaneButtons = new HBox(8);
     Button editDetails;
     Button addRelative;
 
+    /**
+     * Start method for the GUI
+     * @param primaryStage  Primary Stage
+     * @throws Exception    Default Exception
+     */
     @Override
     public void start(Stage primaryStage) throws Exception {
         rootPerson = CreatePerson.createKirito();
@@ -69,17 +82,16 @@ public class Main extends Application {
         Text personTitle = new Text("Person Details");
         personTitle.setFont(Font.font(20));
         //firstname
-        HBox firstName = generateAttribute("First name : ", rootPerson.getFirstName());
+        firstName = generateAttribute("First name : ", "");
         // surnamebef
-        HBox surnameBef = generateAttribute("Lastname bef marriage : ", rootPerson.getLastnameAtBirth());
+        surnameBef = generateAttribute("Lastname bef marriage : ", "");
         // surnameAft
-        HBox surnameAft = generateAttribute("Lastname aft marriage : ", rootPerson.getLastnameUponMarriage());
+        surnameAft = generateAttribute("Lastname aft marriage : ", "");
         // gender
-        HBox gender = generateAttribute("Sex : ", rootPerson.getGender());
+        gender = generateAttribute("Sex : ", "");
         // desc
-        VBox desc = new VBox(8);
+        desc = new VBox(8);
         Text descLabel = new Text("Life description : ");
-        TextArea descContent = new TextArea(rootPerson.getDescription());
         descContent.autosize();
         descContent.setWrapText(true);
         desc.getChildren().addAll(descLabel, descContent);
@@ -88,33 +100,26 @@ public class Main extends Application {
         Text addressTitle = new Text("Address info");
         addressTitle.setFont(Font.font(20));
         // streetNum
-        HBox streetNum = generateAttribute("Street number : ", "" + rootPerson.getAddress().getStreetNum());
+        streetNum = generateAttribute("Street number : ", "");
         // streetName
-        HBox streetName = generateAttribute("Street name : ", rootPerson.getAddress().getStreetName());
+        streetName = generateAttribute("Street name : ", "");
         // suburb
-        HBox suburb = generateAttribute("Suburb : ", rootPerson.getAddress().getSuburb());
+        suburb = generateAttribute("Suburb : ", "");
         // post code
-        HBox postCode = generateAttribute("Postcode : ", "" + rootPerson.getAddress().getPostCode());
+        postCode = generateAttribute("Postcode : ", "");
 
         contentLabels.autosize();
         contentLabels.setMaxWidth(300);
         contentLabels.setMinWidth(175);
         contentLabels.getChildren().addAll(personTitle, firstName, surnameBef, surnameAft, gender, desc, addressTitle, streetNum, streetName, suburb, postCode);
-        // Content
-        content = new TextArea();
-        content.autosize();
-        content.setMaxWidth(150);
-        content.setMinWidth(150);
-        content.setMinHeight(350);
-        //content.setPadding(new Insets(0,20,0,0));
-        contentDesc.getChildren().add(content);
+
         // buttons for adding relative and editing details
         editDetails = new Button("Edit Person");
-        editDetails.setOnAction(e -> {
+        editDetails.setOnAction(evt -> {
 
         });
         addRelative = new Button("Add Relative");
-        addRelative.setOnAction(e -> {
+        addRelative.setOnAction(evt -> {
 
         });
         rightPaneButtons.getChildren().addAll(editDetails, addRelative);
@@ -140,36 +145,110 @@ public class Main extends Application {
         primaryStage.show();
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" }) // suppress the title nodes using rawtypes since they are only title nodes
     private TreeView<Person> createTree(Person person) {
         TreeView<Person> famTree = new TreeView<>();
         TreeItem<Person> root = new TreeItem<Person>(person);
         famTree.setRoot(root);
+
+        // setting the title nodes
         TreeItem<Person> parents = new TreeItem("Parents");
         TreeItem<Person> children = new TreeItem("Children");
         TreeItem<Person> spouse = new TreeItem("Spouse");
+
         // add the parents
         for (Person parent : person.getParents()) {
             parents.getChildren().add(new TreeItem<Person>(parent));
         }
-        // add the children
-        for (Person child : person.getChildren()) {
-            children.getChildren().add(new TreeItem<Person>(child));
-        }
+        // add the spouse
         spouse.getChildren().add(new TreeItem<Person>(person.getSpouse()));
+        // add the children
+        children = addChildrenToTreeView(children, person);
+
         root.getChildren().addAll(parents, children, spouse);
+        root.setExpanded(true);
 
         // setting the buttons
-
+        famTree.setOnMouseClicked(evt -> showSelected(evt));
         return famTree;
     }
 
-    private void showSelected(Event evt) {
-        TreeView<String> tree = (TreeView<String>)evt.getSource();    // gives you the component that triggers the event
-        TreeItem<String> selectedItem = tree.getSelectionModel().getSelectedItem();
+    /**
+     * Recursively add all children to the tree
+     * @param rootChild     Treeitem of the child root
+     * @param firstChild    next child to be added to the child root
+     * @return
+     */
+    private TreeItem<Person> addChildrenToTreeView(TreeItem<Person> rootChild, Person firstChild) {
+        if (firstChild.getChildren() != null) {
+            for (Person child : firstChild.getChildren()) {
+                // Create a new tree item to hold each child
+                TreeItem<Person> childRoot = new TreeItem<>(child);
+                // Add the tree item to the root
+                rootChild.getChildren().add(addChildrenToTreeView(childRoot, child));
+            }
+        }
+        return rootChild;
 
-        System.out.println("Showing: " + selectedItem.getValue());
     }
 
+    /**
+     * Event to show the selected person in the tree
+     * @param evt   Event
+     */
+    private void showSelected(Event evt) {
+        TreeView<Person> tree = (TreeView<Person>)evt.getSource();    // gives you the component that triggers the event
+        try {
+            TreeItem<Person> selectedItem = tree.getSelectionModel().getSelectedItem();
+
+            System.out.println("Showing: " + selectedItem.getValue());
+            changeView(selectedItem.getValue());
+        } catch (NullPointerException | ClassCastException e) {
+            System.out.println("");
+        }
+
+    }
+
+    /**
+     * Changes the view in the right pane to the specified person
+     * @param newPerson Person object to change right pane view to
+     */
+    private void changeView(Person newPerson) {
+        if ((firstName.getChildren().get(1)) instanceof Text) {
+            ((Text)firstName.getChildren().get(1)).setText(newPerson.getFirstName());
+        } else {System.out.println("Cannot Change Firstname");}
+        if ((surnameBef.getChildren().get(1)) instanceof Text) {
+            ((Text)surnameBef.getChildren().get(1)).setText(newPerson.getLastnameAtBirth());
+        } else {System.out.println("Cannot Change surnameBef");}
+        if ((surnameAft.getChildren().get(1)) instanceof Text) {
+            ((Text)surnameAft.getChildren().get(1)).setText(newPerson.getLastnameUponMarriage());
+        } else {System.out.println("Cannot Change surnameAft");}
+        if ((gender.getChildren().get(1)) instanceof Text) {
+            ((Text)gender.getChildren().get(1)).setText(newPerson.getGender());
+        } else {System.out.println("Cannot Change gender");}
+
+        descContent.setText(newPerson.getDescription());
+
+        if ((streetNum.getChildren().get(1)) instanceof Text) {
+            ((Text)streetNum.getChildren().get(1)).setText("" + newPerson.getAddress().getStreetNum());
+        } else {System.out.println("Cannot Change street num");}
+        if ((streetName.getChildren().get(1)) instanceof Text) {
+            ((Text)streetName.getChildren().get(1)).setText("" + newPerson.getAddress().getStreetName());
+        } else {System.out.println("Cannot Change street name");}
+        if ((suburb.getChildren().get(1)) instanceof Text) {
+            ((Text)suburb.getChildren().get(1)).setText("" + newPerson.getAddress().getSuburb());
+        } else {System.out.println("Cannot Change suburb");}
+        if ((postCode.getChildren().get(1)) instanceof Text) {
+            ((Text)postCode.getChildren().get(1)).setText("" + newPerson.getAddress().getPostCode());
+        } else {System.out.println("Cannot Change postCode");}
+    }
+
+    /**
+     * Used for generating each attribute in the details pane
+     * @param label     String label for the attribute
+     * @param content   The content for the attribute
+     * @return          The HBox that is showing the person attribute
+     */
     private HBox generateAttribute(String label, String content) {
         HBox attribute = new HBox(8);
         Text aLabel = new Text(label);
@@ -179,6 +258,11 @@ public class Main extends Application {
         attribute.getChildren().addAll(aLabel, aContent);
         return attribute;
     }
+
+    /**
+     * Main class
+     * @param args  default args
+     */
     public static void main(String[] args) {
         launch(args);
     }
