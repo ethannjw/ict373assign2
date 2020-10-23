@@ -1,4 +1,5 @@
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.event.EventHandler;
@@ -16,6 +17,7 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends Application {
     // main container
@@ -59,6 +61,8 @@ public class Main extends Application {
     Button addRelative;
     Button setRoot;
 
+    String selectedRelativeType = null;    // for storing the relative type
+
     /**
      * Start method for the GUI
      * @param primaryStage  Primary Stage
@@ -67,7 +71,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         rootPerson = new Person();
-        rootPerson = CreatePerson.createKirito();
+        //rootPerson = CreatePerson.createKirito();
         selectedPerson = rootPerson;
         // buttons settings
         loadBtn.setText("Load");
@@ -80,10 +84,10 @@ public class Main extends Application {
         });
         createBtn.setText("Create");
         createBtn.setOnAction(evt -> {
-            editPersonDialog(primaryStage, rootPerson, "Create Person");
-            rootPerson = selectedPerson;    // set the view to show the newly created person
-            createTree(rootPerson);
-            treeView.refresh();
+            statusText.setText("Creating New Person");
+            editPersonDialog(primaryStage, rootPerson, "Create Person", false);
+            selectedPerson = rootPerson;    // set the view to show the newly created person
+
         });
         // Create the treeView
         createTree(rootPerson);
@@ -137,17 +141,22 @@ public class Main extends Application {
         contentLabels.getChildren().addAll(personTitle, firstName, surnameBef, surnameAft, gender, desc, addressTitle, streetNum, streetName, suburb, postCode);
 
         // buttons for adding relative and editing details
+        // edit the selected person
         editDetails = new Button("Edit Person");
         editDetails.setOnAction(evt -> {
-            editPersonDialog(primaryStage, selectedPerson, "Edit Person");
+            editPersonDialog(primaryStage, selectedPerson, "Edit Person", false);
         });
+        // add new person to the root person
         addRelative = new Button("Add Relative");
         addRelative.setOnAction(evt -> {
-
+            editPersonDialog(primaryStage, new Person(), "Add New Relative", true);
+            createTree(rootPerson);
+            treeView.refresh();
         });
         setRoot = new Button("Set as Root");
         setRoot.setOnAction(evt -> {
             createTree(selectedPerson);
+            rootPerson = selectedPerson;
         });
 
         rightPaneButtons.getChildren().addAll(setRoot, editDetails, addRelative);
@@ -213,12 +222,23 @@ public class Main extends Application {
             statusText.setText("Something Went Wrong when trying to save the file!");
         }
     }
+
+    private ComboBox relativeComboBox() {
+
+        // Generate the relative types list
+        String[] relativeTypes = {"Parent", "Child", "Spouse"};
+            ComboBox<String> relativeTypesBox = new ComboBox<>(FXCollections.observableArrayList(relativeTypes));
+        relativeTypesBox.setOnAction(evt -> {
+            this.selectedRelativeType = relativeTypesBox.getValue();
+        });
+        return relativeTypesBox;
+    }
     /**
-     * This is the edit Person dialog box that allows the user to edit the person
+     * This is the edit/create Person dialog box that allows the user to edit the person
      * @param primaryStage  The main stage
      * @param person        The person object to edit
      */
-    private void editPersonDialog(Stage primaryStage, Person person, String dialogTitle) {
+    private void editPersonDialog(Stage primaryStage, Person person, String dialogTitle, boolean relativeField) {
 
         Stage editPerson = new Stage();
         editPerson.setTitle(dialogTitle);
@@ -233,24 +253,15 @@ public class Main extends Application {
         editPersonTitle.setFont(Font.font("Times New Roman", 30));
 
         // Create the labels on the left side
-        Text firstNameLabel = new Text("Firstname : ");
-        editPersonMainBox.add(firstNameLabel, 0,0);
-        Text surnameBefLabel = new Text("Lastname bef Marriage :");
-        editPersonMainBox.add(surnameBefLabel, 0,1);
-        Text surnameAftLabel = new Text("Lastname aft Marriage :");
-        editPersonMainBox.add(surnameAftLabel, 0,2);
-        Text genderLabel = new Text("Sex :");
-        editPersonMainBox.add(genderLabel, 0,3);
-        Text descriptionLabel = new Text("Description :");
-        editPersonMainBox.add(descriptionLabel, 0,4);
-        Text streetNumLabel = new Text("Street Num :");
-        editPersonMainBox.add(streetNumLabel, 0,5);
-        Text streetNameLabel = new Text("Street Name :");
-        editPersonMainBox.add(streetNameLabel, 0,6);
-        Text suburbLabel = new Text("Suburb :");
-        editPersonMainBox.add(suburbLabel, 0,7);
-        Text postCodeLabel = new Text("Postcode :");
-        editPersonMainBox.add(postCodeLabel, 0,8);
+        editPersonMainBox.add(new Text("Firstname : "), 0,0);
+        editPersonMainBox.add(new Text("Lastname bef Marriage :"), 0,1);
+        editPersonMainBox.add(new Text("Lastname aft Marriage :"), 0,2);
+        editPersonMainBox.add(new Text("Sex :"), 0,3);
+        editPersonMainBox.add(new Text("Description :"), 0,4);
+        editPersonMainBox.add(new Text("Street Num :"), 0,5);
+        editPersonMainBox.add(new Text("Street Name :"), 0,6);
+        editPersonMainBox.add(new Text("Suburb :"), 0,7);
+        editPersonMainBox.add(new Text("Postcode :"), 0,8);
 
         // Create the text fields on the right side
         TextField firstNameField = new TextField(person.getFirstName());
@@ -274,6 +285,11 @@ public class Main extends Application {
         TextField postCodeField = new TextField("" + person.getAddress().getPostCode());
         editPersonMainBox.add(postCodeField, 1,8);
 
+        // add the relative box if needed
+        if (relativeField) {
+            editPersonMainBox.add(new Text("Relative :"),0, 9);
+            editPersonMainBox.add(relativeComboBox(), 1, 9);
+        }
 
         // alert popup
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -284,9 +300,12 @@ public class Main extends Application {
         // use HBox to arrange the buttons
         HBox buttonRow = new HBox(8);
         Button confirmBtn = new Button("Confirm");
+
+        // set the confirm button action
         confirmBtn.setOnAction(evt -> {
             try {
                 saveEditedPerson(
+                        person,
                         firstNameField.getText(),
                         surnameBefField.getText(),
                         surnameAftField.getText(),
@@ -297,6 +316,21 @@ public class Main extends Application {
                         suburbField.getText(),
                         postCodeField.getText()
                 );
+                if (relativeField) {
+                    if (this.selectedRelativeType == null) {
+                        alert.setHeaderText("Must set relative!");
+                        alert.setContentText("Please enter the relative");
+                        alert.showAndWait();
+                        return;
+                    }
+                    if (this.selectedRelativeType.equals("Parent")) rootPerson.setParents(person);
+                    if (this.selectedRelativeType.equals("Child")) rootPerson.setChildren(person);
+                    if (this.selectedRelativeType.equals("Spouse")) rootPerson.setSpouse(person);
+                }
+                changeView(person); // change view to the newly created person
+                createTree(rootPerson); // refresh view for the root person
+                treeView.getRoot().setExpanded(true);   // expand the treeview
+                statusText.setText(person.getFirstName() + " done!");
                 editPerson.close();
             } catch (Exception e) {
                 System.out.println(e);
@@ -307,6 +341,7 @@ public class Main extends Application {
             }
 
         });
+        // set the cancel button action
         Button cancelBtn = new Button("Cancel");
         cancelBtn.setOnAction(evt -> {
             editPerson.close();
@@ -327,6 +362,7 @@ public class Main extends Application {
 
     /**
      * Saves the edited person to the selected person instance
+     * @param selectedPerson
      * @param firstName
      * @param lastNameAtBirth
      * @param lastNameUponMarriage
@@ -334,11 +370,11 @@ public class Main extends Application {
      * @param desc
      * @param streetNum
      * @param streetName
-     * @param subrub
+     * @param suburb
      * @param postCode
      * @throws Exception                Will let the caller handle the exception
      */
-    private void saveEditedPerson(String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName,String subrub, String postCode) throws Exception {
+    private void saveEditedPerson(Person selectedPerson, String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName,String suburb, String postCode) throws Exception {
         selectedPerson.setFirstName(firstName);
         selectedPerson.setLastnameAtBirth(lastNameAtBirth);
         selectedPerson.setLastnameUponMarriage(lastNameUponMarriage);
@@ -346,7 +382,7 @@ public class Main extends Application {
         selectedPerson.setDescription(desc);
         selectedPerson.getAddress().setStreetNum(streetNum);
         selectedPerson.getAddress().setStreetName(streetName);
-        selectedPerson.getAddress().setSuburb(subrub);
+        selectedPerson.getAddress().setSuburb(suburb);
         selectedPerson.getAddress().setPostCode(Integer.parseInt(postCode));
 
     }
@@ -412,6 +448,7 @@ public class Main extends Application {
 
             System.out.println("Showing: " + selectedItem.getValue());
             changeView(selectedItem.getValue());
+            // set the selected person
             selectedPerson = selectedItem.getValue();
         } catch (NullPointerException | ClassCastException e) {
             System.out.println("");
