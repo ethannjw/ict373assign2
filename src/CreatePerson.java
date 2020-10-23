@@ -9,18 +9,6 @@ public class CreatePerson {
 
     }
 
-    public static Person nullPerson() {
-        try {
-            Person johnDoe = new Person("", "", "", "", null, "");
-            return johnDoe;
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return null;
-
-
-    }
-
     public static Person createKoisumiSan() {
         try {
             Address addr = new Address("123", "Honkai Impact 1", "Tokyo", 123453);
@@ -37,48 +25,38 @@ public class CreatePerson {
 
     }
 
+    public static void setPersonParents(Person person, Person parent) throws Exception {
+        person.setParents(parent);
+        parent.setChildren(person);
+    }
+
+
     public static Person createKirito() {
         try {
             Address addr = new Address("123", "Sword Art Online", "Tokyo", 123453);
             Address addr2 = new Address("123", "Sword Art Online 2", "Tokyo", 123453);
+            Address addr3 = new Address("123", "Accel World", "Tokyo", 123453);
             Person kirito = new Person("Kazuto 和人", "Kirigaya 桐ヶ谷", "Kirigaya 桐ヶ谷", "Male", addr, "Kirigaya Kazuto (桐ヶ谷 和人, Kirigaya Kazuto?), born as Narusaka Kazuto (鳴坂 和人なるさか かずと, Narusaka Kazuto?)[1], and known as Kirito (キリト, Kirito?) in «Sword Art Online» (SAO), «ALfheim Online» (ALO), «Gun Gale Online» (GGO), and «Project Alicization», is the protagonist of the main Sword Art Online series.");
             Person midori = new Person("Midori 翠", "Aoi", "Kirigaya 桐ヶ谷", "female", addr, "Kirigaya Midori (桐ヶ谷翠, Kirigaya Midori?) is the mother of Suguha, as well as the aunt and adoptive mother of Kazuto. She is an extremely busy woman and leaves the two kids to take care of themselves, only coming back home late in the night and leaving early in the morning, though she still shows love and care for them.");
             Person minetaka = new Person("Minetaka", "Kirigaya 桐ヶ谷", "Kirigaya 桐ヶ谷", "male", addr, "Unknown");
             Person asuna = new Person("Asuna 明日奈", "Yuuki 結城", "Kirigaya 桐ヶ谷", "female", addr2, "Yuuki Asuna (結城 明日奈, Yūki Asuna?), known as Asuna (アスナ, Asuna?) in «Sword Art Online» (SAO), «ALfheim Online» (ALO), as well as «Project Alicization», where she had temporarily used the Stacia (ステイシア, Suteishia?) account, is the main heroine of the Sword Art Online series[7], the deuteragonist of the Aincrad Arc, as well as the protagonist of the Mother's Rosario side story. She is the daughter of the former CEO of RECT Inc.. Asuna was one of the 10,000 players trapped in «Sword Art Online», where she was the sub-leader of the «Knights of the Blood» (KoB) guild.[3] Her skills with the rapier had her earned her the nickname «The Flash» (閃光, Senkō?).");
             Person yui = new Person("Yui ユイ", "", "", "female", addr, "Yui (ユイ, Yui?) is an Artificial Intelligence (AI), found by Kirito and Asuna around the forests of the 22nd Floor of the floating castle Aincrad. Her official name is «Yui-MHCP001» (Mental Health Counseling Program 001).");
-            Person yui2 = new Person("Yui2 ユイ", "", "", "female", addr, "Yui2 (ユイ, Yui?) is an Artificial Intelligence (AI), found by Kirito and Asuna around the forests of the 22nd Floor of the floating castle Aincrad. Her official name is «Yui-MHCP001» (Mental Health Counseling Program 001).");
-            Person kuroHime = new Person("Kurohime", "Princess", "", "female", addr2, "Black Princess");
+            Person blackLotus = new Person("Black Lotus", "", "", "female", addr, "Her \"Burst Brain\" character \"Black Lotus\" (ブラック・ロータス, Burakku Rōtasu) was once known as the Black King (黒王, Kuroō) but after she killed the Red King, she went into hiding.\nBlack Lotus was known as a fearsome model before and after what happened to the Red King. However, she rarely reveals her Black Lotus form. The form of Black Lotus is more technical and robotic than her virtual character. It seems that she can only soar in a short length in the air instead of flying. The character model's color is black and purple. Black Lotus is unique since her limbs are blades instead.");
+            Person kuroHime = new Person("Kurohime", "Princess", "Arita", "female", addr3, "Kuroyukihime (黒雪姫, Kuroyukihime) is one of the main characters in the Accel World series. She is the Black King (黒王, Kuroō), Black Lotus (ブラック ロータス, Burakku Rōtasu), and the leader of the Black Legion, Nega Nebulus. She is the one who gave the Brain Burst program of Haruyuki and now works together with him to reach Level 10 and meet the creator the Accelerated World by defeating the other Pure-Colored Kings. \nHolding true to being \"the most beautiful girl in school,\" Kuroyukihime is a very attractive and slender young girl with long black hair that has two strands of hair extended from the top of her brow, resembling the antenna of a butterfly and large hazel eyes. When Kuroyukihime was hospitalized, she had her hair in a ponytail. Her wardrobe is usually her school uniform consisting of black tights, a dark green skirt with a brown trim, a navy blue blazer, and a light blue bow tie. As she moves to her final year at school, her uniform alters to a red bow tie with all else being the same. It is extremely rare to see Kuroyukihime in casual clothing. It is somehow known that she prefers to wear black colored clothes.");
+            Person haruYuki = new Person("Haruyuki", "Arita", "Arita", "Male", addr3, "Haruyuki Arita (有田 春雪, Arita Haruyuki) is the main protagonist of the Accel World series. He becomes the Burst Linker Silver Crow (シルバー・クロウ, Shirubā Kurō) after he receives the Brain Burst program from Kuroyukihime. He now works together with her to reach Level 10 and meet the creator of the Accelerated World by defeating The Six Kings of Pure Color.\n Haru is rather timid at first due to Araya bullying him. However, after meeting Kuroyukihime and receiving Brain Burst, he can stand up for himself and help Kuroyukihime in achieving her dreams. Later on in the course of the plot, he begins to admit that beyond helping her with her goal of reaching level 10 and knowing the purpose of Brain Burst, little by little he discovers that his dream is in fact, to always be by her side for Kuroyukihime is the person he loves the most even though he does not have the courage to tell her, despite knowing that she also loves him unconditionally. He is also very determined to keep his friendship with Taku and Chiyu after the many problems between them and because of that determination, he strives for the best. Haruyuki is also rather indecisive and often doubts himself. However, as Silver Crow, he is more confident and rather crafty to the point that it was comparable to Yellow Radio");
+
+            kirito.setParents(minetaka);
+            kirito.setParents(midori);
+            kirito.setSpouse(asuna);
             kirito.setChildren(yui);
             kirito.setChildren(kuroHime);
-            minetaka.setChildren(kirito);
-            midori.setChildren(kirito);
-            asuna.setChildren(yui);
-            asuna.setSpouse(kirito);
-            kuroHime.setChildren(yui2);
-            try {
-                kirito.setParents(midori);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-            try {
-                kirito.setParents(minetaka);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-            try {
-                kirito.setSpouse(asuna);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
-            try {
-                yui.setChildren(kuroHime);
-            } catch (Exception e) {
-                System.out.println(e);
-            }
+            kuroHime.setChildren(blackLotus);
+            haruYuki.setSpouse(kuroHime);
+
             return kirito;
         } catch (Exception e) {
             System.out.println(e);
-            return null;
+            return new Person();
         }
     }
 }

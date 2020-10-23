@@ -7,12 +7,19 @@ public class Address implements Serializable {
     private String suburb;
     private int postCode;
 
+    public Address() {
+        super();
+        setStreetNum("");
+        setStreetName("");
+        setSuburb("");
+        setPostCode(0);
+    }
     public Address(String streetNum, String streetName, String suburb, int postCode) {
         super();
-        this.streetNum = streetNum;
-        this.streetName = streetName;
-        this.suburb = suburb;
-        this.postCode = postCode;
+        setStreetNum(streetNum);
+        setStreetName(streetName);
+        setSuburb(suburb);
+        setPostCode(postCode);
     }
 
     public String getStreetNum() {

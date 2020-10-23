@@ -28,8 +28,8 @@ public class Main extends Application {
 
     // The left pane containing the treeview
     private TreeView<Person> treeView = new TreeView<>();
-    private Person rootPerson = null;
-    private Person selectedPerson = null;
+    private Person rootPerson = new Person();
+    private Person selectedPerson = new Person();
 
     // the top pane
     private VBox topPane = new VBox(8);
@@ -66,8 +66,9 @@ public class Main extends Application {
      */
     @Override
     public void start(Stage primaryStage) throws Exception {
+        rootPerson = new Person();
         rootPerson = CreatePerson.createKirito();
-
+        selectedPerson = rootPerson;
         // buttons settings
         loadBtn.setText("Load");
         loadBtn.setOnAction(evt -> {
@@ -78,7 +79,12 @@ public class Main extends Application {
             saveFileChooser(evt, primaryStage);
         });
         createBtn.setText("Create");
-
+        createBtn.setOnAction(evt -> {
+            editPersonDialog(primaryStage, rootPerson, "Create Person");
+            rootPerson = selectedPerson;    // set the view to show the newly created person
+            createTree(rootPerson);
+            treeView.refresh();
+        });
         // Create the treeView
         createTree(rootPerson);
 
@@ -133,7 +139,7 @@ public class Main extends Application {
         // buttons for adding relative and editing details
         editDetails = new Button("Edit Person");
         editDetails.setOnAction(evt -> {
-            editPersonDialog(primaryStage, selectedPerson);
+            editPersonDialog(primaryStage, selectedPerson, "Edit Person");
         });
         addRelative = new Button("Add Relative");
         addRelative.setOnAction(evt -> {
@@ -141,7 +147,7 @@ public class Main extends Application {
         });
         setRoot = new Button("Set as Root");
         setRoot.setOnAction(evt -> {
-            createTree(rootPerson);
+            createTree(selectedPerson);
         });
 
         rightPaneButtons.getChildren().addAll(setRoot, editDetails, addRelative);
@@ -169,6 +175,7 @@ public class Main extends Application {
         FileChooser fileChooser = new FileChooser();
         File initDir = new File(".");
         fileChooser.setInitialDirectory(initDir);
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Family Tree Type(*.ft)", "*.ft"));
         try {
             userSelectedFile = fileChooser.showOpenDialog(primaryStage);
         } catch (NullPointerException e) {
@@ -192,7 +199,7 @@ public class Main extends Application {
         FileChooser fileChooser = new FileChooser();
         File initDir = new File(".");
         fileChooser.setInitialDirectory(initDir);
-
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Family Tree Type(*.ft)", "*.ft"));
         if (rootPerson == null) {
             statusText.setText("Nothing to save!");
             return;
@@ -211,10 +218,10 @@ public class Main extends Application {
      * @param primaryStage  The main stage
      * @param person        The person object to edit
      */
-    private void editPersonDialog(Stage primaryStage, Person person) {
+    private void editPersonDialog(Stage primaryStage, Person person, String dialogTitle) {
 
         Stage editPerson = new Stage();
-        editPerson.setTitle("Edit Person");
+        editPerson.setTitle(dialogTitle);
         editPerson.initModality(Modality.APPLICATION_MODAL);    // set to block other windows
         editPerson.initOwner(primaryStage);
         GridPane editPersonMainBox = new GridPane();
@@ -222,7 +229,7 @@ public class Main extends Application {
         editPersonMainBox.setPadding(new Insets(3,3,3,3));
 
         // create the title
-        Text editPersonTitle = new Text("Edit Person");
+        Text editPersonTitle = new Text(dialogTitle);
         editPersonTitle.setFont(Font.font("Times New Roman", 30));
 
         // Create the labels on the left side
@@ -318,6 +325,19 @@ public class Main extends Application {
         editPerson.show();
     }
 
+    /**
+     * Saves the edited person to the selected person instance
+     * @param firstName
+     * @param lastNameAtBirth
+     * @param lastNameUponMarriage
+     * @param gender
+     * @param desc
+     * @param streetNum
+     * @param streetName
+     * @param subrub
+     * @param postCode
+     * @throws Exception                Will let the caller handle the exception
+     */
     private void saveEditedPerson(String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName,String subrub, String postCode) throws Exception {
         selectedPerson.setFirstName(firstName);
         selectedPerson.setLastnameAtBirth(lastNameAtBirth);
@@ -355,7 +375,7 @@ public class Main extends Application {
         children = addChildrenToTreeView(children, person);
 
         root.getChildren().addAll(parents, children, spouse);
-        root.setExpanded(true);
+        root.setExpanded(false);
 
         // setting the buttons
         treeView.setOnMouseClicked(evt -> showSelected(evt));

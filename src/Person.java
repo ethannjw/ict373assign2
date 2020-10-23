@@ -14,6 +14,21 @@ public class Person implements Serializable {
     private List<Person> children = new ArrayList<>();
     private List<Person> parents = new ArrayList<>();
 
+    public Person() {
+        super();
+        try {
+
+            setFirstName("");
+            setLastnameAtBirth("");
+            setLastnameUponMarriage("");
+            setGender("");
+            setAddress(new Address());
+            setDescription("");
+        } catch (Exception e) {
+            // not supposed to throw any exception
+        }
+
+    }
     public Person(String firstName, String lastnameAtBirth, String lastnameUponMarriage, String gender, Address address, String description) throws Exception {
         super();
         setFirstName(firstName);
@@ -92,8 +107,38 @@ public class Person implements Serializable {
         this.children = children;
     }
 
-    public void setChildren(Person children) {
-        this.children.add(children);
+    public void setChildren(Person child) throws Exception {
+        if (!this.searchChildren(child)) {
+            this.children.add(child);
+        }
+        // check if the child contain this as parent. If not, add as parent
+        if (!child.searchParents(this)) {
+            try {
+                child.setParents(this);
+            } catch (Exception e) {     // in case the child already has 2 parent
+                throw new Exception("Trying to add " + child.getFirstName() + " but he/she already has two parents");
+            }
+
+        }
+        // check if any spouse set as child also
+        if (!spouse.searchChildren(child)) {
+            spouse.setChildren(child);
+        }
+
+    }
+
+    /**
+     * Allows the user to check if the child already exist
+     * @param child The child to test against
+     * @return      True if the person already present, false if not
+     */
+    public boolean searchChildren(Person child) {
+        for (Person thisChild : this.children) {
+            if (thisChild == child) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public ArrayList<Person> getParents() {
@@ -107,20 +152,52 @@ public class Person implements Serializable {
         this.parents = parents;
     }
 
-    public void setParents(Person parents) throws Exception {
+    /**
+     * Allows the user to check if the child already exist
+     * @param parent    Person parent to check against
+     * @return          True if the person already present, false if not
+     */
+    public boolean searchParents(Person parent) {
+        for (Person thisParent : this.parents) {
+            if (thisParent == parent) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Sets the person's parent
+     * @param parent        Person parent
+     * @throws Exception    If the person already has 2 parents
+     */
+    public void setParents(Person parent) throws Exception {
         if (this.parents.size() >= 2) {
             throw new Exception("Already has 2 parents");
         }
-        this.parents.add(parents);
+        // check if the parent already exist in this person before setting parent
+        if (!this.searchParents(parent)) {
+            this.parents.add(parent);
+        }
+        // check if the parent already exist before setting child
+        if (!parent.searchChildren(this)) {
+            parent.setChildren(this);
+        }
     }
 
     public Person getSpouse() {
         return spouse;
     }
 
-    public void setSpouse(Person spouse) {
+    public void setSpouse(Person spouse) throws Exception {
+        if (spouse.getGender() != gender) {
+            throw new Exception("No same sex marriage allowed!");
+        }
         this.spouse = spouse;
+        // automatically sets the other person's spouse to be this person.
+        spouse.setSpouse(this);
     }
+
 
     @Override
     public boolean equals(Object o) {
