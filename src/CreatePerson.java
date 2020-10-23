@@ -55,7 +55,10 @@ public class CreatePerson {
 
             return kirito;
         } catch (Exception e) {
-            System.out.println(e);
+            for (StackTraceElement element : e.getStackTrace()) {
+                System.out.println(element);
+            }
+
             return new Person();
         }
     }

@@ -121,10 +121,11 @@ public class Person implements Serializable {
 
         }
         // check if any spouse set as child also
-        if (!spouse.searchChildren(child)) {
-            spouse.setChildren(child);
+        if (spouse != null) {
+            if (!spouse.searchChildren(child)) {
+                spouse.setChildren(child);
+            }
         }
-
     }
 
     /**
@@ -190,12 +191,27 @@ public class Person implements Serializable {
     }
 
     public void setSpouse(Person spouse) throws Exception {
-        if (spouse.getGender() != gender) {
+
+        if (spouse.getGender().equals(gender) && gender.length() != 0) {
             throw new Exception("No same sex marriage allowed!");
         }
-        this.spouse = spouse;
+        if (this.spouse != spouse) {
+            this.spouse = spouse;
+        }
+
         // automatically sets the other person's spouse to be this person.
-        spouse.setSpouse(this);
+        if (spouse.getSpouse() == null) {   // if the spouse to be is null
+            spouse.setSpouse(this);
+        }
+        if (spouse.getSpouse() != this) {   // if the spouse to be is not this person
+            spouse.setSpouse(this);
+        }
+
+        // automatically add this person's children to the spouse.
+        for (Person thisChild : this.children) {
+            spouse.setChildren(thisChild);
+        }
+
     }
 
 
