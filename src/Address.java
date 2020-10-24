@@ -54,6 +54,9 @@ public class Address implements Serializable {
         this.postCode = postCode;
     }
 
+    public void setPostCode(String postCode) throws NumberFormatException {
+        this.postCode = Integer.parseInt(postCode);
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

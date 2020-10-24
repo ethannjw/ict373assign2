@@ -25,12 +25,6 @@ public class CreatePerson {
 
     }
 
-    public static void setPersonParents(Person person, Person parent) throws Exception {
-        person.setParents(parent);
-        parent.setChildren(person);
-    }
-
-
     public static Person createKirito() {
         try {
             Address addr = new Address("123", "Sword Art Online", "Tokyo", 123453);

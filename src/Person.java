@@ -29,7 +29,7 @@ public class Person implements Serializable {
         }
 
     }
-    public Person(String firstName, String lastnameAtBirth, String lastnameUponMarriage, String gender, Address address, String description) throws Exception {
+    public Person(String firstName, String lastnameAtBirth, String lastnameUponMarriage, String gender, Address address, String description) throws InvalidPersonParameterException {
         super();
         setFirstName(firstName);
         setLastnameAtBirth(lastnameAtBirth);
@@ -37,6 +37,12 @@ public class Person implements Serializable {
         setGender(gender);
         setAddress(address);
         setDescription(description);
+    }
+
+    public static class InvalidPersonParameterException extends Exception {
+        public InvalidPersonParameterException(String msg) {
+            super(msg);
+        }
     }
 
     public String getFirstName() {
@@ -67,7 +73,7 @@ public class Person implements Serializable {
         return gender;
     }
 
-    public void setGender(String gender) throws Exception {
+    public void setGender(String gender) throws InvalidPersonParameterException {
         if (gender.equalsIgnoreCase("")) {
             this.gender = "";
             return;
@@ -80,7 +86,7 @@ public class Person implements Serializable {
             this.gender = "Male";
             return;
         }
-        throw new Exception("Invalid Gender: Usage is 'Male' or 'Female'");
+        throw new InvalidPersonParameterException("Invalid Gender: Usage is 'Male' or 'Female'");
     }
 
     public Address getAddress() {
@@ -107,7 +113,7 @@ public class Person implements Serializable {
         this.children = children;
     }
 
-    public void setChildren(Person child) throws Exception {
+    public void setChildren(Person child) throws InvalidPersonParameterException {
         if (!this.searchChildren(child)) {
             this.children.add(child);
         }
@@ -116,7 +122,7 @@ public class Person implements Serializable {
             try {
                 child.setParents(this);
             } catch (Exception e) {     // in case the child already has 2 parent
-                throw new Exception("Trying to add " + child.getFirstName() + " but he/she already has two parents");
+                throw new InvalidPersonParameterException("Trying to add " + child.getFirstName() + " but he/she already has two parents");
             }
 
         }
@@ -146,9 +152,9 @@ public class Person implements Serializable {
         return (ArrayList<Person>) parents;
     }
 
-    public void setParents(ArrayList<Person> parents) throws Exception {
+    public void setParents(ArrayList<Person> parents) throws InvalidPersonParameterException {
         if (parents.size() > 2) {
-            throw new Exception("Already has 2 parents");
+            throw new InvalidPersonParameterException("Already has 2 parents");
         }
         this.parents = parents;
     }
@@ -170,11 +176,11 @@ public class Person implements Serializable {
     /**
      * Sets the person's parent
      * @param parent        Person parent
-     * @throws Exception    If the person already has 2 parents
+     * @throws InvalidPersonParameterException    If the person already has 2 parents
      */
-    public void setParents(Person parent) throws Exception {
+    public void setParents(Person parent) throws InvalidPersonParameterException {
         if (this.parents.size() >= 2) {
-            throw new Exception("Already has 2 parents");
+            throw new InvalidPersonParameterException("Already has 2 parents");
         }
         // check if the parent already exist in this person before setting parent
         if (!this.searchParents(parent)) {
@@ -190,10 +196,10 @@ public class Person implements Serializable {
         return spouse;
     }
 
-    public void setSpouse(Person spouse) throws Exception {
+    public void setSpouse(Person spouse) throws InvalidPersonParameterException {
 
         if (spouse.getGender().equals(gender) && gender.length() != 0) {
-            throw new Exception("No same sex marriage allowed!");
+            throw new InvalidPersonParameterException("No same sex marriage allowed!");
         }
         if (this.spouse != spouse) {
             this.spouse = spouse;
@@ -234,13 +240,6 @@ public class Person implements Serializable {
 
     @Override
     public String toString() {
-//        return "Person{" +
-//                "firstName='" + firstName + '\'' +
-//                ", lastnameAtBirth='" + lastnameAtBirth + '\'' +
-//                ", gender='" + gender + '\'' +
-//                ", address=" + address +
-//                ", description='" + description + '\'' +
-//                '}';
         return firstName;
     }
 }
