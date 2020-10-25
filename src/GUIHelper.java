@@ -1,25 +1,15 @@
 
-import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.event.Event;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-
 import java.io.File;
-import java.io.IOException;
 
 /**
  * Interface Class that contains static methods and the final attributes to specify the attributes and generate the UI
  */
 public interface GUIHelper {
-
 
     // status bar at the bottom
     HBox statusBar = new HBox();

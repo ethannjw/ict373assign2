@@ -1,5 +1,8 @@
 import java.io.*;
 
+/**
+ * Class that contains the file handling logic
+ */
 public class FileHandler implements Serializable {
 
     public FileHandler() {

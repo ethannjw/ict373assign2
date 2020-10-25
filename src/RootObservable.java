@@ -2,6 +2,9 @@ import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * Observable object that stores the root and selected persons
+ */
 public class RootObservable {
     private Person rootPerson;
     private Person selectedPerson;

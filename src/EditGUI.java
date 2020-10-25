@@ -20,17 +20,6 @@ public class EditGUI implements GUIHelper {
     Text editPersonTitle = new Text("Edit Person");
     RootObservable root = RootObservable.getInstance();
 
-//    /**
-//     * Sets up the stage parameter
-//     * @param primaryStage
-//     * @param dialogTitle
-//     */
-//    public void EditGUI(Stage primaryStage, String dialogTitle) {
-//        editPersonStage.setTitle(dialogTitle);
-//        editPersonStage.initModality(Modality.APPLICATION_MODAL);    // set to block other windows
-//        editPersonStage.initOwner(primaryStage);
-//    }
-
     /**
      * This is the edit/create Person dialog box that allows the user to edit the person
      * @param primaryStage  The main stage
