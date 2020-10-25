@@ -211,6 +211,7 @@ public class Person implements Serializable {
         }
         if (spouse.getSpouse() != this) {   // if the spouse to be is not this person
             spouse.setSpouse(this);
+            return;     // skips adding this person's children to new spouse
         }
 
         // automatically add this person's children to the spouse.

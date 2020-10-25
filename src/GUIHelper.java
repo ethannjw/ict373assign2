@@ -1,4 +1,5 @@
 
+import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.event.Event;
 import javafx.geometry.Insets;
@@ -6,22 +7,19 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
 
 /**
- * Interface Class that contains static methods to help generate
+ * Interface Class that contains static methods and the final attributes to specify the attributes and generate the UI
  */
 public interface GUIHelper {
-    // main container
-    BorderPane mainContainer = new BorderPane();
+
 
     // status bar at the bottom
     HBox statusBar = new HBox();
@@ -75,12 +73,11 @@ public interface GUIHelper {
     Button addRelative = new Button("Add Relative to root");
     Button setRoot = new Button("Set selected as Root");
 
-    // define the alert
     Alert mainAlert = new Alert(Alert.AlertType.ERROR);
-
+    RootObservable root = RootObservable.getInstance();
 
     /**
-     * Changes the view in the right pane to the specified person
+     * Changes the view in the right pane using the instance of the specified person
      * @param newPerson Person object to change right pane view to
      */
     static void changeView(Person newPerson) {
@@ -114,7 +111,7 @@ public interface GUIHelper {
     }
 
     /**
-     * Saves the edited person to the selected person instance
+     * modifies the selected person instance to the updated values
      * @param selectedPerson            The selected person to edit
      * @param firstName                 String Firstname to set
      * @param lastNameAtBirth           String Lastname at birth to set
@@ -175,13 +172,56 @@ public interface GUIHelper {
     }
 
     /**
-     * Method to create the relative dropdown box containing "Parent", "Child", "Spouse"
-     * @return  The dropdown box component
+     * Generate the tree from the specified person
+     * @param person    Specified person to create the tree details
      */
-    static ComboBox<String> relativeComboBox() {
+    @SuppressWarnings({ "unchecked", "rawtypes" }) // suppress the title nodes using rawtypes since they are only title nodes
+    static void createTree(Person person) {
 
-        String[] relativeTypes = {"Parent", "Child", "Spouse"};
-        return new ComboBox<>(FXCollections.observableArrayList(relativeTypes));
+        TreeItem<Person> root = new TreeItem<Person>(person);
+        treeView.setRoot(root);
+
+        // setting the title nodes
+        TreeItem<Person> parents = new TreeItem("Parents");
+        TreeItem<Person> children = new TreeItem("Children");
+        TreeItem<Person> spouse = new TreeItem("Spouse");
+
+        // add the parents
+        for (Person parent : person.getParents()) {
+            parents.getChildren().add(new TreeItem<Person>(parent));
+        }
+        // add the spouse
+        spouse.getChildren().add(new TreeItem<Person>(person.getSpouse()));
+        // add the children
+        GUIHelper.addChildrenToTreeView(children, person);
+
+        root.getChildren().addAll(parents, children, spouse);
+        root.setExpanded(false);
+
+        // setting the buttons
+        treeView.setOnMouseClicked(evt -> showSelected(evt));
+
+    }
+
+    /**
+     * Event to show the selected person in the tree
+     * @param evt   Event
+     */
+    static void showSelected(Event evt) {
+
+        try {
+            TreeView<Person> tree = (TreeView<Person>)evt.getSource();    // gives you the component that triggers the event
+            TreeItem<Person> selectedItem = tree.getSelectionModel().getSelectedItem();
+            // set the status text
+            statusText.setText("Showing: " + selectedItem.getValue());
+            changeView(selectedItem.getValue());
+            // set the selected person
+            root.setSelectedPerson(selectedItem.getValue());
+        } catch (NullPointerException e) {
+            System.out.println("User selected null object");
+        } catch (ClassCastException e) {
+            System.out.println(e);
+        }
 
     }
 
@@ -196,4 +236,6 @@ public interface GUIHelper {
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Family Tree Type(*.ft)", "*.ft"));
         return fileChooser;
     }
+
+
 }
