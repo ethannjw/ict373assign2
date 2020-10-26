@@ -18,54 +18,50 @@ import java.io.IOException;
 public class MainGUI implements GUIHelper {
     // main container
     BorderPane mainContainer = new BorderPane();
-
+    // create the root observable instance for easy access
     RootObservable root = RootObservable.getInstance();
 
-    Stage primaryStage;
-
+    /**
+     * Constructor that sets up the main window
+     * @param primaryStage  The main stage
+     */
     public MainGUI(Stage primaryStage) {
-        this.primaryStage = primaryStage;
 
         // Create the treeView on the right side
         GUIHelper.createTree(root.getRootPerson());
 
         // set the main window to check if the file is saved when closing
-        this.primaryStage.setOnCloseRequest(evt -> {
-            if (root.getChanged()) {    // will display confirmation box only when user has not saved file
-                Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION, "File not saved. Do you really want to quit?", ButtonType.YES, ButtonType.NO);
-                ButtonType answer = closeAlert.showAndWait().orElse(ButtonType.NO);
+        primaryStage.setOnCloseRequest(this::closeDialog);
 
-                if (ButtonType.NO.equals(answer)) {
-                    evt.consume();  // so that the window do not close
-                }
-            }
-        });
         // bottom status bar settings
         statusBar.getChildren().add(statusText);
         statusBar.setMinHeight(10);
 
-        // Defining the top part of the GUI
+        // Defining the title
         Text title = new Text("Family Tree Management System");
         title.setFont(Font.font("Times New Roman", 30));
         topPane.getChildren().add(title);
-        // buttons settings
+
+        // specify the load button
         loadBtn.setText("Load");
         loadBtn.setOnAction(evt -> {
             openFileChooser(primaryStage);
             GUIHelper.createTree(root.getRootPerson());
         });
+
+        // specify the save button
         saveBtn.setText("Save");
         saveBtn.setOnAction(evt -> {
             saveFileChooser(primaryStage);
         });
+
+        // Specify the create button
         createBtn.setText("Create");
         createBtn.setOnAction(evt -> {
-            statusText.setText("Creating New Person");
-            Person newPerson = new Person();
-            root.setRootPerson(newPerson);
-            EditGUI editGUI = new EditGUI(primaryStage, newPerson, "Create Person", false);
-
+            createNewPerson(primaryStage);
         });
+
+        // specify the top row
         hBoxTopButtons.getChildren().add(loadBtn);
         hBoxTopButtons.getChildren().add(saveBtn);
         hBoxTopButtons.getChildren().add(createBtn);
@@ -75,13 +71,16 @@ public class MainGUI implements GUIHelper {
         Text personTitle = new Text("Person Details");
         personTitle.setFont(Font.font(20));
 
+        // specify the life description box
         descContent.autosize();
         descContent.setWrapText(true);
+        descContent.setEditable(false);
         desc.getChildren().addAll(descLabel, descContent);
 
         // Setting the address title
         addressTitle.setFont(Font.font(20));
 
+        // setting the labels specification for the right pane
         contentLabels.autosize();
         contentLabels.setMaxWidth(400);
         contentLabels.setMinWidth(175);
@@ -90,11 +89,11 @@ public class MainGUI implements GUIHelper {
         // buttons for adding relative and editing details
         // edit the selected person
         editDetails.setOnAction(evt -> {
-            EditGUI editGUI = new EditGUI(primaryStage, root.getSelectedPerson(), "Edit "+root.getSelectedPerson(), false);
+            new EditGUI(primaryStage, root.getSelectedPerson(), "Edit "+root.getSelectedPerson(), false);
         });
         // add new person to the root person
         addRelative.setOnAction(evt -> {
-            EditGUI editGUI = new EditGUI(primaryStage, new Person(), "Add Relative to " + root.getRootPerson(), true);
+            new EditGUI(primaryStage, new Person(), "Add Relative to " + root.getRootPerson(), true);
         });
         // set the root person
         setRoot.setOnAction(evt -> {
@@ -119,6 +118,10 @@ public class MainGUI implements GUIHelper {
 
     }
 
+    /**
+     * Gets the main window to the caller
+     * @return  BorderPane main window
+     */
     public BorderPane getMainContainer() {
         return mainContainer;
     }
@@ -179,6 +182,32 @@ public class MainGUI implements GUIHelper {
             mainAlert.showAndWait();
         } catch (NullPointerException e) {
             System.out.println("User did not select a place to save file");
+        }
+    }
+
+    /**
+     * Sets up the create new person dialog
+     * @param primaryStage  The main stage
+     */
+    private void createNewPerson(Stage primaryStage) {
+        statusText.setText("Creating New Person");
+        Person newPerson = new Person();
+        root.setRootPerson(newPerson);
+        new EditGUI(primaryStage, newPerson, "Create Person", false);
+    }
+
+    /**
+     * Sets up the confirmation close dialog
+     * @param evt   Close event
+     */
+    private void closeDialog(Event evt) {
+        if (root.getChanged()) {    // will display confirmation box only when user has not saved file
+            Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION, "File not saved. Do you really want to quit?", ButtonType.YES, ButtonType.NO);
+            ButtonType answer = closeAlert.showAndWait().orElse(ButtonType.NO);
+
+            if (ButtonType.NO.equals(answer)) {
+                evt.consume();  // so that the program do not close if user clicks no
+            }
         }
     }
 }

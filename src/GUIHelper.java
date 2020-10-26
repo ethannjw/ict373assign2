@@ -7,7 +7,8 @@ import javafx.stage.FileChooser;
 import java.io.File;
 
 /**
- * Interface Class that contains static methods and the final attributes to specify the attributes and generate the UI
+ * Interface Class that contains static methods and specifies all the static attributes including the labels, treeview,
+ * buttons,
  */
 public interface GUIHelper {
 
@@ -124,7 +125,7 @@ public interface GUIHelper {
         selectedPerson.getAddress().setStreetName(streetName);
         selectedPerson.getAddress().setSuburb(suburb);
         selectedPerson.getAddress().setPostCode(Integer.parseInt(postCode));
-        root.setChanged(true);  // so that whenever this function is run the root is changed.
+        root.setChanged(true);  // specify that there are changes made
 
     }
 

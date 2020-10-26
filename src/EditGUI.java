@@ -1,5 +1,4 @@
 import javafx.collections.FXCollections;
-import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +13,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * This is the class that defines the edit box. Create person, edit person, add new relative will use this.
+ * The edit GUT will generate the required fields for all the attributes,
+ * and generate a combo box if the user is creating a new relative.
+ */
 public class EditGUI implements GUIHelper {
     Stage editPersonStage = new Stage();
     GridPane editPersonMainBox = new GridPane();
@@ -79,7 +83,6 @@ public class EditGUI implements GUIHelper {
 
         // add the relative box if needed
         if (relativeField) {
-
             editPersonMainBox.add(new Text("Relative :"),0, 9);
             editPersonMainBox.add(relativeComboBoxInstance, 1, 9);
         }
@@ -123,19 +126,19 @@ public class EditGUI implements GUIHelper {
 
     /**
      * Method to define the action to be taken to save the edited attributes into the person instance
-     * @param editPerson
-     * @param person
-     * @param relativeField
-     * @param selectedRelativeType
-     * @param firstName
-     * @param lastNameAtBirth
-     * @param lastNameUponMarriage
-     * @param gender
-     * @param desc
-     * @param streetNum
-     * @param streetName
-     * @param suburb
-     * @param postCode
+     * @param editPerson                The main stage of the edit person
+     * @param person                    The person to edit
+     * @param relativeField             True if the user is trying to save a new relative
+     * @param selectedRelativeType      If trying to save relative this holds the relative type string
+     * @param firstName                 String Firstname to set
+     * @param lastNameAtBirth           String Lastname at birth to set
+     * @param lastNameUponMarriage      String lastname upon marriage to set
+     * @param gender                    String gender to set
+     * @param desc                      String Description to set
+     * @param streetNum                 String streetNum to set
+     * @param streetName                String streetname to set
+     * @param suburb                    String suburb to set
+     * @param postCode                  String postcode to set
      */
     private void confirmAction(Stage editPerson, Person person, boolean relativeField, String selectedRelativeType, String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName, String suburb, String postCode) {
 
@@ -171,7 +174,7 @@ public class EditGUI implements GUIHelper {
             GUIHelper.changeView(person);
             editPerson.close();
 
-        } catch (NumberFormatException e) {
+        } catch (NumberFormatException e) {     // if the post code is not number
             System.out.println(e);
             mainAlert.setHeaderText("Error in saving person");
             mainAlert.setContentText("The postcode must be all numbers!");

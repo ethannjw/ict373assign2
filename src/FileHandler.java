@@ -1,13 +1,15 @@
 import java.io.*;
 
 /**
- * Class that contains the file handling logic
+ * Class that contains the file handling logic with static classes
  */
 public class FileHandler implements Serializable {
-
-    public FileHandler() {
-
-    }
+    /**
+     * The load method returns the person object from the file
+     * @param file          The file to open
+     * @return              The person object from the file
+     * @throws IOException  If the file is not readable
+     */
     public static Person load(File file) throws IOException {
         Person root;
         FileInputStream inFile = new FileInputStream(file);
@@ -22,10 +24,17 @@ public class FileHandler implements Serializable {
         inObject.close();
         return root;
     }
-    public static void save(File file, Person root) throws IOException
+
+    /**
+     * The save method that saves the person into the file
+     * @param file          The file to save to
+     * @param person        The person object to save
+     * @throws IOException  If the file is not writable
+     */
+    public static void save(File file, Person person) throws IOException
     {
         FileOutputStream outFile = new FileOutputStream(file);
         ObjectOutputStream outObject = new ObjectOutputStream(outFile);
-        outObject.writeObject(root);
+        outObject.writeObject(person);
     }
 }

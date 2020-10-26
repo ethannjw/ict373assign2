@@ -3,6 +3,9 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * The person object that stores the person contents and its relatives
+ */
 public class Person implements Serializable {
     private String firstName;
     private String lastnameAtBirth;
@@ -14,10 +17,12 @@ public class Person implements Serializable {
     private List<Person> children = new ArrayList<>();
     private List<Person> parents = new ArrayList<>();
 
+    /**
+     * Creates a new empty person
+     */
     public Person() {
         super();
         try {
-
             setFirstName("");
             setLastnameAtBirth("");
             setLastnameUponMarriage("");
@@ -25,54 +30,99 @@ public class Person implements Serializable {
             setAddress(new Address());
             setDescription("");
         } catch (Exception e) {
-            // not supposed to throw any exception
+            // not supposed to throw any exception since the person is empty
         }
-
     }
-    public Person(String firstName, String lastnameAtBirth, String lastnameUponMarriage, String gender, Address address, String description) throws InvalidPersonParameterException {
+
+    /**
+     * The person constructor that takes in all the required attributes, but no relatives yet
+     * @param firstName                         String Firstname to set
+     * @param lastNameAtBirth                   String Lastname at birth to set
+     * @param lastNameUponMarriage              String lastname upon marriage to set
+     * @param gender                            String gender to set
+     * @param description                       String Description to set
+     * @throws InvalidPersonParameterException  If any of parameter is not correct throws a useful message
+     */
+    public Person(String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, Address address, String description) throws InvalidPersonParameterException {
         super();
         setFirstName(firstName);
-        setLastnameAtBirth(lastnameAtBirth);
-        setLastnameUponMarriage(lastnameUponMarriage);
+        setLastnameAtBirth(lastNameAtBirth);
+        setLastnameUponMarriage(lastNameUponMarriage);
         setGender(gender);
         setAddress(address);
         setDescription(description);
     }
 
+    /**
+     * Defines own exception that gives useful message
+     */
     public static class InvalidPersonParameterException extends Exception {
         public InvalidPersonParameterException(String msg) {
             super(msg);
         }
     }
 
+    /**
+     * Returns the firstName
+     * @return  firstName in string
+     */
     public String getFirstName() {
         return firstName;
     }
 
-    public String getLastnameAtBirth() {
-        return lastnameAtBirth;
-    }
-
+    /**
+     * Sets the firstName
+     * @param firstName      firstName in string
+     */
     public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
+    /**
+     * Returns the lastnameAtBirth
+     * @return  lastnameAtBirth in string
+     */
+    public String getLastnameAtBirth() {
+        return lastnameAtBirth;
+    }
+
+    /**
+     * Sets the lastnameAtBirth
+     * @param lastnameAtBirth      lastnameAtBirth in string
+     */
     public void setLastnameAtBirth(String lastnameAtBirth) {
         this.lastnameAtBirth = lastnameAtBirth;
     }
 
+    /**
+     * Returns the lastnameUponMarriage
+     * @return  lastnameUponMarriage in string
+     */
     public String getLastnameUponMarriage() {
         return lastnameUponMarriage;
     }
 
+    /**
+     * Sets the LastnameUponMarriage
+     * @param lastnameUponMarriage      LastnameUponMarriage in string
+     */
     public void setLastnameUponMarriage(String lastnameUponMarriage) {
         this.lastnameUponMarriage = lastnameUponMarriage;
     }
 
+    /**
+     * Returns the gender of person in string
+     * @return  gender in string
+     */
     public String getGender() {
         return gender;
     }
 
+    /**
+     * Sets the gender. can only be empty string, "male" or "female" case insensitive
+     * @param gender                            gender in string
+     * @throws InvalidPersonParameterException  If the parameter does not match "male" or "female"
+     */
     public void setGender(String gender) throws InvalidPersonParameterException {
         if (gender.equalsIgnoreCase("")) {
             this.gender = "";
@@ -89,30 +139,65 @@ public class Person implements Serializable {
         throw new InvalidPersonParameterException("Invalid Gender: Usage is 'Male' or 'Female'");
     }
 
+    /**
+     * Returns the address object
+     * @return  the address object
+     */
     public Address getAddress() {
         return address;
     }
 
+    /**
+     * Sets the address object
+     * @param address   the address object
+     */
     public void setAddress(Address address) {
         this.address = address;
     }
 
+    /**
+     * Returns the description of person in string
+     * @return  description in string
+     */
     public String getDescription() {
         return description;
     }
 
+    /**
+     * Sets the description string
+     * @param description   the description string
+     */
     public void setDescription(String description) {
         this.description = description;
     }
 
+    /**
+     * Returns the children list
+     * @return  The children list
+     */
     public ArrayList<Person> getChildren() {
         return (ArrayList<Person>) children;
     }
 
-    public void setChildren(ArrayList<Person> children) {
-        this.children = children;
+    /**
+     * Sets the children using an array. Adds children to the list of existing children
+     * @param children  arraylist of persons
+     */
+    public void setChildren(ArrayList<Person> children) throws InvalidPersonParameterException {
+        for (Person child : children) {
+            this.setChildren(child);
+        }
     }
 
+    /**
+     * This method will try to add the child to this person
+     * Checks if the child's parent is not this person.
+     * If not, will try to add this person to the child's parent.
+     * Will check and try to add the child to this person's spouse.
+     * Obviously, this would cause error if the child already has two parent specified
+     * @param child                             Child person object
+     * @throws InvalidPersonParameterException  If the child has already two parents
+     */
     public void setChildren(Person child) throws InvalidPersonParameterException {
         if (!this.searchChildren(child)) {
             this.children.add(child);
@@ -124,7 +209,6 @@ public class Person implements Serializable {
             } catch (Exception e) {     // in case the child already has 2 parent
                 throw new InvalidPersonParameterException("Trying to add " + child.getFirstName() + " but he/she already has two parents");
             }
-
         }
         // check if any spouse set as child also
         if (spouse != null) {
@@ -148,6 +232,10 @@ public class Person implements Serializable {
         return false;
     }
 
+    /**
+     * Returns the parent list
+     * @return  parent list as an arraylist
+     */
     public ArrayList<Person> getParents() {
         return (ArrayList<Person>) parents;
     }
@@ -175,8 +263,8 @@ public class Person implements Serializable {
 
     /**
      * Sets the person's parent
-     * @param parent        Person parent
-     * @throws InvalidPersonParameterException    If the person already has 2 parents
+     * @param parent                                Person parent
+     * @throws InvalidPersonParameterException      If the person already has 2 parents
      */
     public void setParents(Person parent) throws InvalidPersonParameterException {
         if (this.parents.size() >= 2) {
@@ -192,10 +280,23 @@ public class Person implements Serializable {
         }
     }
 
+    /**
+     * Returns the person's spouse
+     * @return  Spouse person
+     */
     public Person getSpouse() {
         return spouse;
     }
 
+    /**
+     * Sets the person's spouse
+     * Tries to add this person's children to the spouse also.
+     * Checks and try to set the spouse's spouse as this person. But if there is already a spouse present (remarry)
+     * the program will not add this person's children to the spouse
+     * (which will violate that child cannot have more than 2 parents).
+     * @param spouse
+     * @throws InvalidPersonParameterException
+     */
     public void setSpouse(Person spouse) throws InvalidPersonParameterException {
 
         if (spouse.getGender().equals(gender) && gender.length() != 0) {
@@ -221,12 +322,16 @@ public class Person implements Serializable {
 
     }
 
-
+    /**
+     * equals method that compares the firstname, LastnameAtBirth, LastnameUponMarriage, gender, description
+     * @param other other person to compare to
+     * @return  true if same, false if not
+     */
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
+    public boolean equals(Object other) {
+        if (this == other) return true;
+        if (other == null || getClass() != other.getClass()) return false;
+        Person person = (Person) other;
         return getFirstName().equals(person.getFirstName()) &&
                 getLastnameAtBirth().equals(person.getLastnameAtBirth()) &&
                 Objects.equals(getLastnameUponMarriage(), person.getLastnameUponMarriage()) &&
@@ -234,11 +339,20 @@ public class Person implements Serializable {
                 Objects.equals(getDescription(), person.getDescription());
     }
 
+    /**
+     * Overrides the hashCode method retrieving the hashes for firstname, LastnameAtBirth, LastnameUponMarriage,
+     * gender, description
+     * @return      This object hash
+     */
     @Override
     public int hashCode() {
         return Objects.hash(getFirstName(), getLastnameAtBirth(), getLastnameUponMarriage(), getGender(), getDescription());
     }
 
+    /**
+     * This object will only return the person first name (For use in the treeview)
+     * @return  firstname string
+     */
     @Override
     public String toString() {
         return firstName;

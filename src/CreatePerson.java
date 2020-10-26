@@ -2,6 +2,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 
+/**
+ * My test class that creates some example family tree
+ */
 public class CreatePerson {
     public CreatePerson() {
 
