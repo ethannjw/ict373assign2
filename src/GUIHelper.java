@@ -124,6 +124,7 @@ public interface GUIHelper {
         selectedPerson.getAddress().setStreetName(streetName);
         selectedPerson.getAddress().setSuburb(suburb);
         selectedPerson.getAddress().setPostCode(Integer.parseInt(postCode));
+        root.setChanged(true);  // so that whenever this function is run the root is changed.
 
     }
 

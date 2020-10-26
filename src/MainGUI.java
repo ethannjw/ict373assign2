@@ -2,6 +2,8 @@ import javafx.event.Event;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
@@ -27,6 +29,17 @@ public class MainGUI implements GUIHelper {
         // Create the treeView on the right side
         GUIHelper.createTree(root.getRootPerson());
 
+        // set the main window to check if the file is saved when closing
+        this.primaryStage.setOnCloseRequest(evt -> {
+            if (root.getChanged()) {    // will display confirmation box only when user has not saved file
+                Alert closeAlert = new Alert(Alert.AlertType.CONFIRMATION, "File not saved. Do you really want to quit?", ButtonType.YES, ButtonType.NO);
+                ButtonType answer = closeAlert.showAndWait().orElse(ButtonType.NO);
+
+                if (ButtonType.NO.equals(answer)) {
+                    evt.consume();  // so that the window do not close
+                }
+            }
+        });
         // bottom status bar settings
         statusBar.getChildren().add(statusText);
         statusBar.setMinHeight(10);
@@ -127,7 +140,7 @@ public class MainGUI implements GUIHelper {
         }
         // load the root person into the rootPerson instance
         try {
-            root.setRootPerson(FileHandler.load(userSelectedFile));
+            root.loadRootPerson(FileHandler.load(userSelectedFile));
 
         } catch (IOException e) {   // problem with opening file
             System.out.println(e);
@@ -156,6 +169,7 @@ public class MainGUI implements GUIHelper {
         File userSelectedFile = fileChooser.showSaveDialog(primaryStage);
         try {
             FileHandler.save(userSelectedFile, root.getRootPerson());
+            root.setChanged(false);     // update that the file has been saved
             statusText.setText("File saved!");
         } catch (IOException e) {
             System.out.println(e);

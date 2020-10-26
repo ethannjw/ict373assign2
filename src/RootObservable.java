@@ -9,10 +9,12 @@ public class RootObservable {
     private Person rootPerson;
     private Person selectedPerson;
     private static RootObservable rootInstance = null;
+    private boolean changed;
 
     private RootObservable() {
         rootPerson = new Person();
         selectedPerson = rootPerson;
+        this.changed = false;
     }
 
     /**
@@ -25,8 +27,12 @@ public class RootObservable {
         }
         return rootInstance;
     }
+    public void loadRootPerson (Person newPerson) {
+        this.rootPerson = newPerson;
+    }
     public void setRootPerson(Person newPerson) {
         this.rootPerson = newPerson;
+        this.changed = true;
     }
     public void setSelectedPerson(Person newPerson) {
         this.selectedPerson = newPerson;
@@ -44,6 +50,12 @@ public class RootObservable {
         return selectedPerson;
     }
 
+    public void setChanged(boolean bool) {
+        this.changed = bool;
+    }
+    public boolean getChanged() {
+        return changed;
+    }
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
