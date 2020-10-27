@@ -13,7 +13,7 @@ public class RootObservable {
      * Generates a new object that is only called by the get instance method.
      */
     private RootObservable() {
-        rootPerson = new Person();
+        rootPerson = new Person();  // change this value to generate from the CreatePerson class
         selectedPerson = rootPerson;
         this.changed = false;
     }

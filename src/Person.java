@@ -267,13 +267,15 @@ public class Person implements Serializable {
      * @throws InvalidPersonParameterException      If the person already has 2 parents
      */
     public void setParents(Person parent) throws InvalidPersonParameterException {
-        if (this.parents.size() >= 2) {
-            throw new InvalidPersonParameterException("Already has 2 parents");
-        }
         // check if the parent already exist in this person before setting parent
-        if (!this.searchParents(parent)) {
+        if (!this.searchParents(parent)) {  // if parent does not exist yet
+            // check if the person already has 2 parents before trying to add
+            if (this.parents.size() >= 2) {
+                throw new InvalidPersonParameterException("Already has 2 parents");
+            }
             this.parents.add(parent);
         }
+
         // check if the parent already exist before setting child
         if (!parent.searchChildren(this)) {
             parent.setChildren(this);
@@ -350,11 +352,14 @@ public class Person implements Serializable {
     }
 
     /**
-     * This object will only return the person first name (For use in the treeview)
-     * @return  firstname string
+     * This object will return the person first name and last name. (For use in the treeview)
+     * If person has lastnameUponMarriage, will return lastnameUponMarriage
+     * if not, will return lastnameAtBirth
+     * @return  first and lastname string
      */
     @Override
     public String toString() {
-        return firstName;
+        if (lastnameUponMarriage.equals("")) return firstName + " " + lastnameAtBirth;
+        else return firstName + " " + lastnameUponMarriage;
     }
 }
