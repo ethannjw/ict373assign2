@@ -6,7 +6,9 @@ import javafx.scene.effect.PerspectiveTransform;
 import java.util.ArrayList;
 
 /**
- * My test class that creates some example family tree
+ * My test class that creates some example family tree.
+ * To use this change the constructor to initialise rootPerson from here in the RootObservable.
+ * Example: rootPerson = CreatePerson.createHarryPotter;
  */
 public class CreatePerson {
 
@@ -43,8 +45,6 @@ public class CreatePerson {
             ronWeasly.setSpouse(hermioneGranger);
             ronWeasly.setChildren(roseWeasley);
             ronWeasly.setChildren(hugoWeasley);
-
-
             return harryPotter;
         } catch (Exception e) {
             System.out.println(e);
