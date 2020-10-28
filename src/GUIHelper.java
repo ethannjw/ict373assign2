@@ -115,7 +115,7 @@ public interface GUIHelper {
      * @param postCode                  String postcode to set
      * @throws Exception                Will let the caller handle the exception
      */
-    static void saveEditedPerson(Person selectedPerson, String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName, String suburb, String postCode) throws Person.InvalidPersonParameterException {
+    static void saveEditedPerson(Person selectedPerson, String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName, String suburb, String postCode) throws Person.InvalidPersonParameterException, Address.InvalidAddressParameterException {
         selectedPerson.setFirstName(firstName);
         selectedPerson.setLastnameAtBirth(lastNameAtBirth);
         selectedPerson.setLastnameUponMarriage(lastNameUponMarriage);

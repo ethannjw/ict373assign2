@@ -15,10 +15,10 @@ public class Address implements Serializable {
      */
     public Address() {
         super();
-        setStreetNum("");
-        setStreetName("");
-        setSuburb("");
-        setPostCode(0);
+        streetNum = ("");
+        streetName = ("");
+        suburb = ("");
+        postCode = (1000);
     }
 
     /**
@@ -28,12 +28,21 @@ public class Address implements Serializable {
      * @param suburb        Suburb in string
      * @param postCode      Postcode in integer
      */
-    public Address(String streetNum, String streetName, String suburb, int postCode) {
+    public Address(String streetNum, String streetName, String suburb, int postCode) throws Address.InvalidAddressParameterException{
         super();
         setStreetNum(streetNum);
         setStreetName(streetName);
         setSuburb(suburb);
         setPostCode(postCode);
+    }
+
+    /**
+     * Defines own exception that gives useful message
+     */
+    public static class InvalidAddressParameterException extends Exception {
+        public InvalidAddressParameterException(String msg) {
+            super(msg);
+        }
     }
 
     /**
@@ -95,8 +104,12 @@ public class Address implements Serializable {
      * Sets the post code in integer
      * @param postCode Post code in integer
      */
-    public void setPostCode(int postCode) {
-        this.postCode = postCode;
+    public void setPostCode(int postCode) throws Address.InvalidAddressParameterException{
+        if (postCode < 9999 && postCode > 999) {
+            this.postCode = postCode;
+        } else {
+            throw new InvalidAddressParameterException("Post code can only be 4 digits long");
+        }
     }
 
     /**
@@ -114,25 +127,25 @@ public class Address implements Serializable {
                 getStreetName().equals(address.getStreetName()) &&
                 getSuburb().equals(address.getSuburb());
     }
-
-    /**
-     * Overrides the hashCode method retrieving the hashes for all attributes
-     * @return      This object hash
-     */
-    @Override
-    public int hashCode() {
-        return Objects.hash(getStreetNum(), getStreetName(), getSuburb(), getPostCode());
-    }
-
-    /**
-     * Overrides the toString method to print out human readable text
-     * @return  Human readable string text of this object
-     */
-    @Override
-    public String toString() {
-        return  "streetNum: " + streetNum +
-                "streetName: " + streetName +
-                "suburb: " + suburb +
-                "postCode: " + postCode;
-    }
+//
+//    /**
+//     * Overrides the hashCode method retrieving the hashes for all attributes
+//     * @return      This object hash
+//     */
+//    @Override
+//    public int hashCode() {
+//        return Objects.hash(getStreetNum(), getStreetName(), getSuburb(), getPostCode());
+//    }
+//
+//    /**
+//     * Overrides the toString method to print out human readable text
+//     * @return  Human readable string text of this object
+//     */
+//    @Override
+//    public String toString() {
+//        return  "streetNum: " + streetNum +
+//                "streetName: " + streetName +
+//                "suburb: " + suburb +
+//                "postCode: " + postCode;
+//    }
 }

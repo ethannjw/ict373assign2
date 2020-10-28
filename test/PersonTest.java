@@ -2,6 +2,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * This Test class will test all the methods in the Person, Address and the functionality in the RootObservable classes.
+ */
 class PersonTest {
 
     RootObservable root = RootObservable.getInstance();
@@ -22,7 +25,7 @@ class PersonTest {
     Person hugoWeasley;
 
     @org.junit.jupiter.api.BeforeEach
-    void setUp() throws Person.InvalidPersonParameterException {
+    void setUp() throws Person.InvalidPersonParameterException, Address.InvalidAddressParameterException {
         root.loadRootPerson(CreatePerson.createHarryPotter());
         harryHousehold = new Address("1A", "Harry Street 1", "Gryffindor", 4340);
         weasleyHousehold = new Address("20A", "Weasley Street 1", "Gryffindor", 4570);
@@ -41,6 +44,61 @@ class PersonTest {
         hugoWeasley = new Person("Hugo", "Weasley", "", "male", weasleyHousehold, "Hugo Weasley is Hermione and Ron's son and younger child. He is close in age to Harry and Ginny's daughter and youngest child, Lily Luna Potter, and had not yet started at Hogwarts by the epilogue of Deathly Hallows.");
     }
 
+    // Test Address
+    @org.junit.jupiter.api.Test
+    void getStreetNum() {
+        assertEquals("1A", harryHousehold.getStreetNum());
+    }
+
+    @org.junit.jupiter.api.Test
+    void setStreetNum() {
+        harryHousehold.setStreetNum("123");
+        assertEquals("123", harryHousehold.getStreetNum());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getStreetName() {
+        assertEquals("Harry Street 1", harryHousehold.getStreetName());
+    }
+
+    @org.junit.jupiter.api.Test
+    void setStreetName() {
+        harryHousehold.setStreetName("new street");
+        assertEquals("new street", harryHousehold.getStreetName());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getSuburb() {
+        assertEquals("Gryffindor", harryHousehold.getSuburb());
+    }
+
+    @org.junit.jupiter.api.Test
+    void setSuburb() {
+        harryHousehold.setSuburb("new suburb");
+        assertEquals("new suburb", harryHousehold.getSuburb());
+    }
+
+    @org.junit.jupiter.api.Test
+    void getPostCode() {
+        assertEquals(4340, harryHousehold.getPostCode());
+    }
+
+    @org.junit.jupiter.api.Test
+    void setPostCode() throws Address.InvalidAddressParameterException{
+        harryHousehold.setPostCode(1000);
+        assertEquals(1000, harryHousehold.getPostCode());
+        assertThrows(Address.InvalidAddressParameterException.class, () -> harryHousehold.setPostCode(0000));
+        assertThrows(Address.InvalidAddressParameterException.class, () -> harryHousehold.setPostCode(0));
+        assertThrows(Address.InvalidAddressParameterException.class, () -> harryHousehold.setPostCode(10000));
+        assertThrows(Address.InvalidAddressParameterException.class, () -> harryHousehold.setPostCode(123));
+    }
+
+    @org.junit.jupiter.api.Test
+    void addressEquals() {
+        assertEquals(harryHousehold, root.getRootPerson().getAddress());
+    }
+
+    // test the RootObservable
     @org.junit.jupiter.api.Test
     void checkRoot() {
         assertEquals(harryPotter, root.getRootPerson());
@@ -130,12 +188,11 @@ class PersonTest {
 
     @org.junit.jupiter.api.Test
     void getAddress() {
-        Address harryHousehold = new Address("1A", "Harry Street 1", "Gryffindor", 4340);
-        assertEquals(harryHousehold, root.getRootPerson().getAddress());
+        assertTrue(root.getRootPerson().getAddress().equals(harryHousehold));
     }
 
     @org.junit.jupiter.api.Test
-    void setAddress() {
+    void setAddress() throws Address.InvalidAddressParameterException{
         Address testAddress = new Address("123", "test street", "suburb", 1234);
         root.getRootPerson().setAddress(testAddress);
         assertEquals(testAddress, root.getRootPerson().getAddress());

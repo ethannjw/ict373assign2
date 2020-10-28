@@ -22,16 +22,13 @@ public class Person implements Serializable {
      */
     public Person() {
         super();
-        try {
-            setFirstName("");
-            setLastnameAtBirth("");
-            setLastnameUponMarriage("");
-            setGender("");
-            setAddress(new Address());
-            setDescription("");
-        } catch (Exception e) {
-            // not supposed to throw any exception since the person is empty
-        }
+        firstName = ("");
+        lastnameAtBirth = ("");
+        lastnameUponMarriage = ("");
+        gender = ("");
+        address = (new Address());
+        description = ("");
+
     }
 
     /**
