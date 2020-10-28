@@ -224,12 +224,7 @@ public class Person implements Serializable {
      * @return      True if the person already present, false if not
      */
     public boolean searchChildren(Person child) {
-        for (Person thisChild : this.children) {
-            if (thisChild == child) {
-                return true;
-            }
-        }
-        return false;
+        return this.children.contains(child);
     }
 
     /**
@@ -253,12 +248,8 @@ public class Person implements Serializable {
      * @return          True if the person already present, false if not
      */
     public boolean searchParents(Person parent) {
-        for (Person thisParent : this.parents) {
-            if (thisParent == parent) {
-                return true;
-            }
-        }
-        return false;
+        return this.parents.contains(parent);
+
     }
 
     /**
@@ -293,8 +284,8 @@ public class Person implements Serializable {
     /**
      * Sets the person's spouse
      * Tries to add this person's children to the spouse also.
-     * Checks and try to set the spouse's spouse as this person. But if there is already a spouse present (remarry)
-     * the program will not add this person's children to the spouse
+     * Checks and try to set the spouse's spouse as this person. But if either of them is remarry, the children will
+     * not be added
      * (which will violate that child cannot have more than 2 parents).
      * @param spouse
      * @throws InvalidPersonParameterException
@@ -304,24 +295,34 @@ public class Person implements Serializable {
         if (spouse.getGender().equals(gender) && gender.length() != 0) {
             throw new InvalidPersonParameterException("No same sex marriage allowed!");
         }
-        if (this.spouse != spouse) {
+
+        // check if this person is unmarried
+        if (this.spouse == null) {
+            this.spouse = spouse;
+            // automatically sets the other person's spouse to be this person.
+            // if the spouse to be is also unmarried then add children
+            if (spouse.getSpouse() == null) {
+                spouse.setSpouse(this);
+                // automatically add this person's children to the spouse.
+                for (Person thisChild : this.children) {
+                    spouse.setChildren(thisChild);
+                }
+                // automatically add other children to this person
+                for (Person otherChild : spouse.getChildren()) {
+                    this.setChildren(otherChild);
+                }
+            }
+        }
+
+        // check if this person remarried, then only change the spouse but do not affect the children
+        if (!this.spouse.equals(spouse)) {
             this.spouse = spouse;
         }
 
-        // automatically sets the other person's spouse to be this person.
-        if (spouse.getSpouse() == null) {   // if the spouse to be is null
+        // if the spouse to be remarried,, then only change the spouse but do not affect the children
+        if (spouse.getSpouse() != this) {
             spouse.setSpouse(this);
         }
-        if (spouse.getSpouse() != this) {   // if the spouse to be is not this person
-            spouse.setSpouse(this);
-            return;     // skips adding this person's children to new spouse
-        }
-
-        // automatically add this person's children to the spouse.
-        for (Person thisChild : this.children) {
-            spouse.setChildren(thisChild);
-        }
-
     }
 
     /**

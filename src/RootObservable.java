@@ -35,6 +35,7 @@ public class RootObservable {
      */
     public void loadRootPerson (Person newPerson) {
         this.rootPerson = newPerson;
+        this.changed = false;
     }
 
     /**
