@@ -24,6 +24,11 @@ class PersonTest {
     Person roseWeasley;
     Person hugoWeasley;
 
+    /**
+     * Sets up multiple persons and addresses and the RootObservable instance to be run before all tests
+     * @throws Person.InvalidPersonParameterException
+     * @throws Address.InvalidAddressParameterException
+     */
     @org.junit.jupiter.api.BeforeEach
     void setUp() throws Person.InvalidPersonParameterException, Address.InvalidAddressParameterException {
         root.loadRootPerson(CreatePerson.createHarryPotter());
@@ -44,45 +49,68 @@ class PersonTest {
         hugoWeasley = new Person("Hugo", "Weasley", "", "male", weasleyHousehold, "Hugo Weasley is Hermione and Ron's son and younger child. He is close in age to Harry and Ginny's daughter and youngest child, Lily Luna Potter, and had not yet started at Hogwarts by the epilogue of Deathly Hallows.");
     }
 
-    // Test Address
+    /**
+     * Test the Address get street number method
+     */
     @org.junit.jupiter.api.Test
     void getStreetNum() {
         assertEquals("1A", harryHousehold.getStreetNum());
     }
 
+    /**
+     * Test the Address set street name method
+     */
     @org.junit.jupiter.api.Test
     void setStreetNum() {
         harryHousehold.setStreetNum("123");
         assertEquals("123", harryHousehold.getStreetNum());
     }
 
+    /**
+     * Test the Address get street name method
+     */
     @org.junit.jupiter.api.Test
     void getStreetName() {
         assertEquals("Harry Street 1", harryHousehold.getStreetName());
     }
 
+    /**
+     * Test the Address set street name method
+     */
     @org.junit.jupiter.api.Test
     void setStreetName() {
         harryHousehold.setStreetName("new street");
         assertEquals("new street", harryHousehold.getStreetName());
     }
 
+    /**
+     * Test the Address get suburb method
+     */
     @org.junit.jupiter.api.Test
     void getSuburb() {
         assertEquals("Gryffindor", harryHousehold.getSuburb());
     }
 
+    /**
+     * Test the Address set suburb method
+     */
     @org.junit.jupiter.api.Test
     void setSuburb() {
         harryHousehold.setSuburb("new suburb");
         assertEquals("new suburb", harryHousehold.getSuburb());
     }
 
+    /**
+     * Test the Address get postcode method
+     */
     @org.junit.jupiter.api.Test
     void getPostCode() {
         assertEquals(4340, harryHousehold.getPostCode());
     }
 
+    /**
+     * Test the Address set postcode method
+     */
     @org.junit.jupiter.api.Test
     void setPostCode() throws Address.InvalidAddressParameterException{
         harryHousehold.setPostCode(1000);
@@ -93,29 +121,43 @@ class PersonTest {
         assertThrows(Address.InvalidAddressParameterException.class, () -> harryHousehold.setPostCode(123));
     }
 
+    /**
+     * Test the Address equals method
+     */
     @org.junit.jupiter.api.Test
     void addressEquals() {
         assertEquals(harryHousehold, root.getRootPerson().getAddress());
     }
 
-    // test the RootObservable
+    /**
+     * test the getRootObservable root person
+     */
     @org.junit.jupiter.api.Test
-    void checkRoot() {
+    void getRoot() {
         assertEquals(harryPotter, root.getRootPerson());
     }
 
+    /**
+     * test the set RootObservable root person
+     */
     @org.junit.jupiter.api.Test
-    void checkSetRootPerson() {
+    void setRootPerson() {
         root.setRootPerson(ginnyWeasly);
         assertEquals(ginnyWeasly, root.getRootPerson());
     }
 
+    /**
+     * test the get RootObservable selected person
+     */
     @org.junit.jupiter.api.Test
-    void checkSetSelectedPerson() {
+    void setSelectedPerson() {
         root.setSelectedPerson(ginnyWeasly);
         assertEquals(ginnyWeasly, root.getSelectedPerson());
     }
 
+    /**
+     * test the set RootObservable update root to selected
+     */
     @org.junit.jupiter.api.Test
     void checkUpdateRootToSelected() {
         root.setSelectedPerson(ginnyWeasly);
@@ -123,58 +165,96 @@ class PersonTest {
         assertEquals(ginnyWeasly, root.getRootPerson());
     }
 
+    /**
+     * test the set RootObservable get changed method
+     */
     @org.junit.jupiter.api.Test
-    void checkChangedMethod() {
+    void getChangedMethod() {
         assertFalse(root.getChanged());
+
+    }
+
+    /**
+     * test the set RootObservable set changed method
+     */
+    @org.junit.jupiter.api.Test
+    void setChangedMethod() {
         root.setChanged(true);
         assertTrue(root.getChanged());
     }
 
+    /**
+     * test the RootObservable if root is changed the changed variable is true
+     */
     @org.junit.jupiter.api.Test
-    void checkChangedDueToChangingRoot() {
+    void changedDueToChangingRoot() {
         assertFalse(root.getChanged());
         root.setRootPerson(ginnyWeasly);
         assertTrue(root.getChanged());
     }
 
+    /**
+     * Test the Person get first name
+     */
     @org.junit.jupiter.api.Test
     void getFirstName() {
         assertEquals(root.getRootPerson().getFirstName(), "Harry");
     }
 
+    /**
+     * Test the Person set first name
+     */
     @org.junit.jupiter.api.Test
     void setFirstName() {
         root.getRootPerson().setFirstName("new person");
         assertEquals(root.getRootPerson().getFirstName(), "new person");
     }
 
+    /**
+     * Test the Person get last name at birth
+     */
     @org.junit.jupiter.api.Test
     void getLastnameAtBirth() {
         assertEquals(root.getRootPerson().getLastnameAtBirth(), "Potter");
     }
 
+    /**
+     * Test the Person set last name at birth
+     */
     @org.junit.jupiter.api.Test
     void setLastnameAtBirth() {
         root.getRootPerson().setLastnameAtBirth("changed");
         assertEquals(root.getRootPerson().getLastnameAtBirth(), "changed");
     }
 
+    /**
+     * Test the Person get last name upon marriage
+     */
     @org.junit.jupiter.api.Test
     void getLastnameUponMarriage() {
         assertEquals(root.getRootPerson().getLastnameUponMarriage(), "Potter");
     }
 
+    /**
+     * Test the Person set last name upon marriage
+     */
     @org.junit.jupiter.api.Test
     void setLastnameUponMarriage() {
         root.getRootPerson().setLastnameUponMarriage("changed");
         assertEquals(root.getRootPerson().getLastnameUponMarriage(), "changed");
     }
 
+    /**
+     * Test the Person get gender
+     */
     @org.junit.jupiter.api.Test
     void getGender() {
         assertEquals(root.getRootPerson().getGender(), "Male");
     }
 
+    /**
+     * Test the Person set gender
+     */
     @org.junit.jupiter.api.Test
     void setGender() throws Person.InvalidPersonParameterException {
         // test male and female and their case insensitivity
@@ -186,11 +266,17 @@ class PersonTest {
 
     }
 
+    /**
+     * Test the Person get address
+     */
     @org.junit.jupiter.api.Test
     void getAddress() {
         assertTrue(root.getRootPerson().getAddress().equals(harryHousehold));
     }
 
+    /**
+     * Test the Person set address
+     */
     @org.junit.jupiter.api.Test
     void setAddress() throws Address.InvalidAddressParameterException{
         Address testAddress = new Address("123", "test street", "suburb", 1234);
@@ -198,17 +284,26 @@ class PersonTest {
         assertEquals(testAddress, root.getRootPerson().getAddress());
     }
 
+    /**
+     * Test the Person get description
+     */
     @org.junit.jupiter.api.Test
     void getDescription() {
         assertEquals(root.getRootPerson().getDescription(), "Harry James Potter is a fictional character and the titular protagonist in J. K. Rowling's series of eponymous novels. The majority of the books' plot covers seven years in the life of the orphan Harry, who, on his eleventh birthday, learns he is a wizard. Thus, he attends Hogwarts School of Witchcraft and Wizardry to practice magic under the guidance of the kindly headmaster Albus Dumbledore and other school professors along with his best friends Ron Weasley and Hermione Granger. Harry also discovers that he is already famous throughout the novel's magical community, and that his fate is tied with that of Lord Voldemort – the internationally feared Dark Wizard and murderer of his parents, Lily and James. The film and book series revolve around Harry's struggle to adapt to the wizarding world and defeat Voldemort.");
     }
 
+    /**
+     * Test the Person set description
+     */
     @org.junit.jupiter.api.Test
     void setDescription() {
         root.getRootPerson().setDescription("changed");
         assertEquals(root.getRootPerson().getDescription(), "changed");
     }
 
+    /**
+     * Test the Person get children
+     */
     @org.junit.jupiter.api.Test
     void getChildren() throws Person.InvalidPersonParameterException {
         List<Person> childrenArray = root.getRootPerson().getChildren();
@@ -224,6 +319,9 @@ class PersonTest {
 
     }
 
+    /**
+     * Test the Person set children
+     */
     @org.junit.jupiter.api.Test
     void setChildren() throws Person.InvalidPersonParameterException {
         Person testChild = new Person();
@@ -236,6 +334,9 @@ class PersonTest {
 
     }
 
+    /**
+     * Test the Person search children
+     */
     @org.junit.jupiter.api.Test
     void searchChildren() throws Person.InvalidPersonParameterException {
         Person testChild = new Person();
@@ -247,6 +348,9 @@ class PersonTest {
         assertTrue(root.getRootPerson().searchChildren(testChild));
     }
 
+    /**
+     * Test the Person get parents
+     */
     @org.junit.jupiter.api.Test
     void getParents() {
         List<Person> parentsArray = root.getRootPerson().getParents();
@@ -256,6 +360,9 @@ class PersonTest {
 
     }
 
+    /**
+     * Test the Person set parents
+     */
     @org.junit.jupiter.api.Test
     void setParents() throws Person.InvalidPersonParameterException {
         Person testParent = new Person();
@@ -267,20 +374,28 @@ class PersonTest {
         assertTrue(testChild.getParents().contains(testParent));
         // test that adding parent will also add testChild as their child
         assertTrue(testParent.searchChildren(testChild));
-
     }
 
+    /**
+     * Test the Person search parents
+     */
     @org.junit.jupiter.api.Test
     void searchParents() {
         assertTrue(root.getRootPerson().searchParents(jamesPotter));
         assertTrue(root.getRootPerson().searchParents(lilyEvansPotter));
     }
 
+    /**
+     * Test the Person get spouse
+     */
     @org.junit.jupiter.api.Test
     void getSpouse() {
         assertEquals(ginnyWeasly, root.getRootPerson().getSpouse());
     }
 
+    /**
+     * Test the Person set spouse
+     */
     @org.junit.jupiter.api.Test
     void setSpouse() throws Person.InvalidPersonParameterException {
         Person testSpouse = new Person();
@@ -307,16 +422,25 @@ class PersonTest {
         assertTrue(hermioneGranger.searchChildren(roseWeasley));
     }
 
+    /**
+     * Test the Person equals
+     */
     @org.junit.jupiter.api.Test
     void testEquals() {
         assertTrue(root.getRootPerson().equals(harryPotter));
     }
 
+    /**
+     * Test the Person hashcode
+     */
     @org.junit.jupiter.api.Test
     void testHashCode() {
         assertEquals(harryPotter.hashCode(), root.getRootPerson().hashCode());
     }
 
+    /**
+     * Test the Person to string
+     */
     @org.junit.jupiter.api.Test
     void testToString() {
         assertEquals("Harry Potter", root.getRootPerson().toString());
