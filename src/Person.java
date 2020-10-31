@@ -289,7 +289,7 @@ public class Person implements Serializable {
      */
     public void setSpouse(Person spouse) throws InvalidPersonParameterException {
 
-        if (spouse.getGender().equals(gender) && gender.length() != 0) {
+        if (spouse.getGender().equals(this.gender)) {
             throw new InvalidPersonParameterException("No same sex marriage allowed!");
         }
 

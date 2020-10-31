@@ -143,17 +143,6 @@ public class EditGUI implements GUIHelper {
     private void confirmAction(Stage editPerson, Person person, boolean relativeField, String selectedRelativeType, String firstName, String lastNameAtBirth, String lastNameUponMarriage, String gender, String desc, String streetNum, String streetName, String suburb, String postCode) {
 
         try {
-            if (relativeField) {
-                if (selectedRelativeType == null) {
-                    mainAlert.setHeaderText("Must set relative!");
-                    mainAlert.setContentText("Please enter the relative");
-                    mainAlert.showAndWait();
-                    return;
-                }
-                if (selectedRelativeType.equals("Parent")) root.getRootPerson().setParents(person);
-                if (selectedRelativeType.equals("Child")) root.getRootPerson().setChildren(person);
-                if (selectedRelativeType.equals("Spouse")) root.getRootPerson().setSpouse(person);
-            }
             System.out.println("Editing: "+person);
             GUIHelper.saveEditedPerson(
                     person,
@@ -167,6 +156,17 @@ public class EditGUI implements GUIHelper {
                     suburb,
                     postCode
             );
+            if (relativeField) {
+                if (selectedRelativeType == null) {
+                    mainAlert.setHeaderText("Must set relative!");
+                    mainAlert.setContentText("Please enter the relative");
+                    mainAlert.showAndWait();
+                    return;
+                }
+                if (selectedRelativeType.equals("Parent")) root.getRootPerson().setParents(person);
+                if (selectedRelativeType.equals("Child")) root.getRootPerson().setChildren(person);
+                if (selectedRelativeType.equals("Spouse")) root.getRootPerson().setSpouse(person);
+            }
             System.out.println("Edited: "+person);
             statusText.setText(person.getFirstName() + " done!");
             GUIHelper.createTree(root.getRootPerson());
