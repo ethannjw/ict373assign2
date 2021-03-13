@@ -1,0 +1,181 @@
+@startuml
+
+title Family Tree Program
+
+
+    class Address {
+        - postCode : int
+        - streetName : String
+        - streetNum : String
+        - suburb : String
+        + Address()
+        + Address()
+        + equals()
+        + getPostCode()
+        + getStreetName()
+        + getStreetNum()
+        + getSuburb()
+        + setPostCode()
+        + setStreetName()
+        + setStreetNum()
+        + setSuburb()
+    }
+
+
+
+    class EditGUI {
+        ~ editPersonMainBox : GridPane
+        ~ editPersonStage : Stage
+        ~ editPersonTitle : Text
+        + EditGUI()
+        {static} ~ relativeComboBox()
+        - confirmAction()
+    }
+
+  
+
+
+    class FileHandler {
+        {static} + load()
+        {static} + save()
+    }
+
+  
+
+
+    interface GUIHelper {
+        {static} + addRelative : Button
+        {static} + addressTitle : Text
+        {static} + contentLabels : VBox
+        {static} + createBtn : Button
+        {static} + desc : VBox
+        {static} + descContent : TextArea
+        {static} + descLabel : Text
+        {static} + editDetails : Button
+        {static} + firstName : HBox
+        {static} + gender : HBox
+        {static} + hBoxTopButtons : HBox
+        {static} + loadBtn : Button
+        {static} + mainAlert : Alert
+        {static} + postCode : HBox
+        {static} + rightPane : BorderPane
+        {static} + rightPaneButtons : HBox
+        {static} + root : RootObservable
+        {static} + saveBtn : Button
+        {static} + setRoot : Button
+        {static} + statusBar : HBox
+        {static} + statusText : Text
+        {static} + streetName : HBox
+        {static} + streetNum : HBox
+        {static} + suburb : HBox
+        {static} + surnameAft : HBox
+        {static} + surnameBef : HBox
+        {static} + topPane : VBox
+        {static} + treeView : TreeView<Person>
+        {static} + addChildrenToTreeView()
+        {static} + changeView()
+        {static} + createTree()
+        {static} + generateAttribute()
+        {static} + getFileChooserInstance()
+        {static} + saveEditedPerson()
+        {static} + showSelected()
+    }
+
+  
+
+
+    class Main {
+        {static} + main()
+        + start()
+    }
+
+  
+
+
+    class MainGUI {
+        ~ mainContainer : BorderPane
+        + MainGUI()
+        + getMainContainer()
+        - closeDialog()
+        - createNewPerson()
+        - openFileChooser()
+        - saveFileChooser()
+    }
+  
+
+    class Person {
+        - children : List<Person>
+        - description : String
+        - firstName : String
+        - gender : String
+        - lastnameAtBirth : String
+        - lastnameUponMarriage : String
+        - parents : List<Person>
+        + Person()
+        + Person()
+        + equals()
+        + getAddress()
+        + getChildren()
+        + getDescription()
+        + getFirstName()
+        + getGender()
+        + getLastnameAtBirth()
+        + getLastnameUponMarriage()
+        + getParents()
+        + getSpouse()
+        + hashCode()
+        + searchChildren()
+        + searchParents()
+        + setAddress()
+        + setChildren()
+        + setChildren()
+        + setDescription()
+        + setFirstName()
+        + setGender()
+        + setLastnameAtBirth()
+        + setLastnameUponMarriage()
+        + setParents()
+        + setParents()
+        + setSpouse()
+        + toString()
+    }
+
+
+    class RootObservable {
+        - changed : boolean
+        {static} - rootInstance : RootObservable
+        + getChanged()
+        {static} + getInstance()
+        + getRootPerson()
+        + getSelectedPerson()
+        + loadRootPerson()
+        + setChanged()
+        + setRootPerson()
+        + setSelectedPerson()
+        + updateRootToSelected()
+        - RootObservable()
+    }
+
+  class class {
+    - privateAttrribute
+    +
+  }
+
+  Address .up.|> java.io.Serializable
+  EditGUI .up.|> GUIHelper
+  EditGUI o-- RootObservable : root
+  RootObservable o-- RootObservable : rootInstance
+  FileHandler .up.|> java.io.Serializable
+  Main -up-|> javafx.application.Application
+  MainGUI .up.|> GUIHelper
+  MainGUI o-- RootObservable : root
+  Person .up.|> java.io.Serializable
+  Person o-- Address : address
+  Person o-- Person : spouse
+  Person o-- Person : parents
+  Person o-- Person : children
+  RootObservable o-- Person : rootPerson
+  RootObservable o-- Person : selectedPerson
+
+
+@enduml

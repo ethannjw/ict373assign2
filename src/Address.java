@@ -127,25 +127,5 @@ public class Address implements Serializable {
                 getStreetName().equals(address.getStreetName()) &&
                 getSuburb().equals(address.getSuburb());
     }
-//
-//    /**
-//     * Overrides the hashCode method retrieving the hashes for all attributes
-//     * @return      This object hash
-//     */
-//    @Override
-//    public int hashCode() {
-//        return Objects.hash(getStreetNum(), getStreetName(), getSuburb(), getPostCode());
-//    }
-//
-//    /**
-//     * Overrides the toString method to print out human readable text
-//     * @return  Human readable string text of this object
-//     */
-//    @Override
-//    public String toString() {
-//        return  "streetNum: " + streetNum +
-//                "streetName: " + streetName +
-//                "suburb: " + suburb +
-//                "postCode: " + postCode;
-//    }
+
 }
